@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CKP Pay Hours</title>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont;background:#0f1115;color:#e8ecf1}
+.top{background:#5a2b8a;padding:12px 16px;font-weight:900}
+.wrap{padding:16px}
+select,input{padding:8px;border-radius:8px;border:1px solid #444;background:#1b1f2a;color:#fff}
+table{width:100%;border-collapse:collapse;margin-top:12px}
+th,td{padding:8px;border-bottom:1px solid #333;text-align:right}
+th{text-align:left;background:#1a1e28}
+.num{text-align:right}
+.footer{font-weight:900}
+.card{background:#131722;padding:12px;border-radius:12px;margin-top:16px}
+button{padding:8px 12px;border-radius:8px;border:none;background:#6aa8ff;color:#000;font-weight:900;margin-top:8px}
+</style>
+</head>
+<body>
+
+<div class="top">CKP Pay Hours</div>
+<div class="wrap">
+
+<select id="monthSel">
+<option>Jan 2026</option>
+<option>Feb 2026</option>
+<option>Mar 2026</option>
+<option>Apr 2026</option>
+<option>May 2026</option>
+<option>Jun 2026</option>
+<option>Jul 2026</option>
+<option>Aug 2026</option>
+<option>Sep 2026</option>
+<option>Oct 2026</option>
+<option>Nov 2026</option>
+<option>Dec 2026</option>
+</select>
+
+<table>
+<thead>
+<tr>
+<th>Date</th>
+<th>Code</th>
+<th>Base (hh:mm)</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody id="rows"></tbody>
+</table>
+
+<div class="card">
+<div><b>Total Hours:</b> <span id="totalHrs">0.00</span></div>
+</div>
+
+<div class="card">
+<div><b>Finance Summary (Dollars)</b></div>
+<div>Gross: <span id="gross">$0.00</span></div>
+<div>Fed: <span id="fed">$0.00</span></div>
+<div>Medicare: <span id="med">$0.00</span></div>
+<div>SS: <span id="ss">$0.00</span></div>
+<div><b>NET:</b> <span id="net">$0.00</span></div>
+</div>
+
+</div>
+
+<script>
+const payRate = 390.30;
+const overridePct = 0.20;
+const medRate = 0.0145;
+const ssRate = 0.062;
+const fedRate = 0.22;
+
+function toDecimal(time){
+ if(!time.includes(":")) return 0;
+ let parts=time.split(":");
+ return (parseInt(parts[0]) + parseInt(parts[1])/60).toFixed(2);
+}
+
+function recalc(){
+ let total=0;
+ document.querySelectorAll(".base").forEach(i=>{
+   let dec=parseFloat(toDecimal(i.value));
+   if(!isNaN(dec)) total+=dec;
+ });
+ document.getElementById("totalHrs").innerText=total.toFixed(2);
+ 
+ let gross=total*payRate;
+ let fed=gross*fedRate;
+ let med=gross*medRate;
+ let ss=gross*ssRate;
+ let net=gross-fed-med-ss;
+ 
+ document.getElementById("gross").innerText="$"+gross.toFixed(2);
+ document.getElementById("fed").innerText="$"+fed.toFixed(2);
+ document.getElementById("med").innerText="$"+med.toFixed(2);
+ document.getElementById("ss").innerText="$"+ss.toFixed(2);
+ document.getElementById("net").innerText="$"+net.toFixed(2);
+}
+
+let tbody=document.getElementById("rows");
+for(let d=1;d<=31;d++){
+ let tr=document.createElement("tr");
+ tr.innerHTML=`
+ <td>${d}</td>
+ <td>
+   <select>
+     <option></option>
+     <option>LC</option>
+     <option>NH</option>
+     <option>UG</option>
+     <option>WDAY</option>
+     <option>Vacation</option>
+     <option>Sick</option>
+   </select>
+ </td>
+ <td><input class="base" placeholder="6:00"></td>
+ <td class="num">-</td>
+ `;
+ tbody.appendChild(tr);
+}
+
+document.querySelectorAll(".base").forEach(i=>i.addEventListener("input",recalc));
+</script>
+
+</body>
+</html>
