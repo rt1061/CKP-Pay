@@ -420,7 +420,10 @@ button.ok:hover{background:rgba(106,168,255,.32)}
     }catch{ return blankMonth(); }
   }
   const saveMonth = (k,d) => localStorage.setItem(monthKey(k), JSON.stringify(d));
-
+// Used by cloud sync code (writes WITHOUT triggering render loops)
+function saveMonthLocalOnly(k, d) {
+  localStorage.setItem(monthKey(k), JSON.stringify(d));
+}
   function lookupFedRate(x){
     // Match Excel LOOKUP(A2:A300,B2:B300) behavior on the sheet's ROW ORDER (range isn't fully sorted).
     // Excel returns the LAST threshold <= x encountered while scanning top-to-bottom.
