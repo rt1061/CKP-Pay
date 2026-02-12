@@ -253,13 +253,8 @@ button.ok:hover{background:rgba(106,168,255,.32)}
     : null;
 
   // We store a UUID locally and use it as "user_id" in the table.
-  const DEVICE_ID_KEY = "ckp:deviceId";
-  const DEVICE_ID =
-    localStorage.getItem(DEVICE_ID_KEY) ||
-    (crypto.randomUUID
-      ? crypto.randomUUID()
-      : "00000000-0000-4000-8000-" + Math.random().toString(16).slice(2, 14).padEnd(12, "0"));
-  localStorage.setItem(DEVICE_ID_KEY, DEVICE_ID);
+  // Shared ID for all devices
+const DEVICE_ID = "robert-tate-shared";
 
   const cloudTagEl = document.getElementById("cloudTag");
   const setCloudTag = (t) => { if (cloudTagEl) cloudTagEl.textContent = t; };
