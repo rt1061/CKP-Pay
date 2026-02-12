@@ -399,12 +399,14 @@ button.ok:hover{background:rgba(106,168,255,.32)}
   }
 
   const blankMonth = () => ({
-    shfs:"FS",
-    lineRotation:"No",
-    unionDues: DEFAULTS.unionOnDefault || "No",
-    otherTaxable: 0,
-    rows: Array.from({length:ROWS_PER_MONTH},(_,i)=>({day:i+1, code:"", base:""}))
-  });
+  _cloudTs: 0,
+  _localTs: 0,
+  shfs:"FS",
+  lineRotation:"No",
+  unionDues: DEFAULTS.unionOnDefault || "No",
+  otherTaxable: 0,
+  rows: Array.from({length:ROWS_PER_MONTH},(_,i)=>({day:i+1, code:"", base:""}))
+});
 
   function loadMonth(k){
     const raw=localStorage.getItem(monthKey(k));
@@ -419,7 +421,10 @@ button.ok:hover{background:rgba(106,168,255,.32)}
       return {shfs:p.shfs||"FS", lineRotation:p.lineRotation||"No", unionDues:p.unionDues||DEFAULTS.unionOnDefault||"No", otherTaxable:Number(p.otherTaxable||0), rows};
     }catch{ return blankMonth(); }
   }
-  const saveMonth = (k,d) => localStorage.setItem(monthKey(k), JSON.stringify(d));
+  const saveMonth = (k,d) => {
+  d._localTs = Date.now();
+  localStorage.setItem(monthKey(k), JSON.stringify(d));
+};
 // Used by cloud sync code (writes WITHOUT triggering render loops)
 function saveMonthLocalOnly(k, d) {
   localStorage.setItem(monthKey(k), JSON.stringify(d));
