@@ -129,9 +129,27 @@ details summary{cursor:pointer}
 
 .financeWrap{margin-top:16px;background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:auto}
 .financeTitle{padding:12px 12px 0 12px;font-weight:900}
-.finGrid{display:grid;grid-template-columns:200px 135px 135px 135px 135px 135px;align-items:center}
-.finHead{background:rgba(255,255,255,.06);font-size:12px;font-weight:900;position:sticky;top:0}
-.finCell{padding:10px;border-top:1px solid rgba(255,255,255,.06);border-right:1px solid rgba(255,255,255,.06)}
+.finGrid{
+    display:grid;
+    grid-template-columns: 1.4fr repeat(5, 1fr);
+    gap:0;
+    background: rgba(0,0,0,.38);   /* darker background */
+    border-radius:14px;
+    overflow:hidden;
+}
+.finHead{
+  background:rgba(0,0,0,.42);
+  font-size:12px;
+  font-weight:900;
+  position:sticky;
+  top:0;
+}
+.finCell{
+  padding:10px;
+  border-top:1px solid rgba(255,255,255,.05);
+  border-right:1px solid rgba(255,255,255,.05);
+  background:rgba(0,0,0,.28);
+}
 .finCell:last-child{border-right:none}
 .finLabel{color:var(--muted);font-weight:800}
 .finNet{background:rgba(106,168,255,.14)}
