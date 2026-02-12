@@ -42,7 +42,7 @@ button.ghost{background:rgba(255,255,255,.08)}button.ghost:hover{background:rgba
 .grid{display:grid;grid-template-columns:70px 160px 105px 165px 105px 110px 110px 110px;align-items:center}
 .header{
   background:rgba(0,0,0,.32);
-  font-size:12px;
+  font-size:14px;
   font-weight:900;
   position:sticky;
   top:0;
@@ -60,9 +60,8 @@ button.ghost{background:rgba(255,255,255,.08)}button.ghost:hover{background:rgba
   text-align:center;
 }
 
-/* Keep Date and Code left-aligned */
-.grid.header > div:first-child,
-.grid.header > div:nth-child(2){
+/* Keep Date left-aligned only */
+.grid.header > div:first-child{
   justify-content:flex-start;
   text-align:left;
 }
