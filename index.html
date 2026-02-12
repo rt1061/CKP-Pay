@@ -3,131 +3,375 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>CKP Cloud Sync Test</title>
+<title>CKP Pay Hours</title>
 
 <style>
-body{
-  font-family:system-ui,-apple-system,Segoe UI,Roboto;
-  background:#0f1115;
-  color:#e8ecf1;
-  margin:0;
-  padding:40px;
-}
-.card{
-  max-width:600px;
-  background:#131722;
-  border:1px solid #273042;
-  border-radius:16px;
-  padding:24px;
-}
-input{
-  width:100%;
-  margin:8px 0 16px 0;
-  padding:10px;
-  border-radius:10px;
-  border:1px solid rgba(255,255,255,.15);
-  background:rgba(255,255,255,.06);
-  color:white;
-}
-button{
-  padding:10px 14px;
-  border-radius:12px;
-  border:none;
-  background:rgba(255,255,255,.15);
-  color:white;
-  cursor:pointer;
-  margin-right:8px;
-}
-button:hover{
-  background:rgba(255,255,255,.25);
-}
+:root{--bg:#0f1115;--panel:#131722;--text:#e8ecf1;--muted:#a7b0bd;--line:#273042;--accent:#6aa8ff;--top:#5a2b8a}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
+.topbar{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--top);border-bottom:1px solid rgba(255,255,255,.08)}
+.brand{font-weight:900}
+.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+select,button,input{font:inherit}
+select{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);color:var(--text);padding:8px 10px;border-radius:10px;outline:none}
+button{border:none;background:rgba(255,255,255,.15);color:var(--text);padding:10px 12px;border-radius:12px;cursor:pointer;white-space:nowrap}
+button:hover{background:rgba(255,255,255,.22)}
+button.ghost{background:rgba(255,255,255,.08)}button.ghost:hover{background:rgba(255,255,255,.14)}
+button.ok{background:rgba(106,168,255,.22);border:1px solid rgba(106,168,255,.35)}
+button.ok:hover{background:rgba(106,168,255,.32)}
+.smallTag{font-size:12px;color:rgba(255,255,255,.85);padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.10)}
+.layout{display:grid;grid-template-columns:1fr 420px;gap:16px;padding:16px}
+@media(max-width:1180px){.layout{grid-template-columns:1fr}.right{order:-1}}
+.monthTitle{font-size:18px;font-weight:900;margin:0 0 10px}
+.tableWrap{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:auto}
+.grid{display:grid;grid-template-columns:70px 160px 105px 165px 105px 110px 110px 110px;align-items:center}
+.header{background:rgba(255,255,255,.06);font-size:12px;font-weight:900;position:sticky;top:0;z-index:10}
+.header>div,.footer>div{padding:12px 10px;border-right:1px solid rgba(255,255,255,.06)}
+.header>div:last-child,.footer>div:last-child{border-right:none}
+.row{border-top:1px solid rgba(255,255,255,.06)}
+.cell{padding:10px;border-right:1px solid rgba(255,255,255,.06)}
+.cell:last-child{border-right:none}
+.datePill{display:inline-flex;align-items:center;justify-content:center;width:34px;height:24px;border:2px solid var(--accent);border-radius:6px;font-weight:900;background:rgba(106,168,255,.06)}
+select.codeSel,input.baseInp{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--text);padding:8px;border-radius:10px;outline:none}
+input.baseInp{text-align:right;font-variant-numeric:tabular-nums}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.note{margin-top:10px;color:var(--muted);font-size:13px}
+.footer{background:rgba(255,255,255,.04);font-weight:900}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px}
+.pilot{padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.07)}
+.pilotName{font-size:22px;font-weight:900}
+.pilotId{color:var(--muted);margin-top:2px}
+.pilotMeta{display:flex;gap:18px;margin-top:10px;color:var(--muted);flex-wrap:wrap}
+.metaVal{color:var(--text);font-weight:900;margin-top:2px}
+.summary{margin-top:12px}
+.sumRow{display:flex;justify-content:space-between;align-items:center;padding:8px 0}
+.sumRow.indent{padding-left:16px;color:rgba(255,255,255,.88)}
+.sumRow.total{font-size:18px;font-weight:950}
+.divider{height:1px;background:rgba(255,255,255,.10);margin:8px 0}
+.netMini{margin-top:10px;border-top:1px solid rgba(255,255,255,.07);padding-top:10px}
+.netChip{display:flex;justify-content:space-between;align-items:center;background:rgba(106,168,255,.10);border:1px solid rgba(106,168,255,.35);border-radius:12px;padding:10px 12px;margin-top:8px}
+.netChip .lbl{font-weight:900}
+.netChip .val{font-variant-numeric:tabular-nums;font-weight:950}
+details summary{cursor:pointer}
+.settingsGrid{margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.settingsGrid label{display:flex;flex-direction:column;gap:4px;font-size:12px}
+.settingsGrid input{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--text);padding:8px;border-radius:10px;outline:none}
+.small{font-size:12px}
+.shfsSel{background:transparent;border:none;color:var(--text);font-weight:900;padding:0;outline:none}
+.pillRow{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.pill{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
+.pill select,.pill input{padding:6px 8px;border-radius:10px;min-width:120px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--text)}
+.pill input{text-align:right}
 </style>
-
 </head>
 <body>
+<header class="topbar">
+  <div class="brand">CKP Pay Hours</div>
+  <div class="actions">
+    <select id="monthSelect"></select>
+    <button id="backupBtn">Backup JSON</button>
+    <button id="restoreBtn">Restore JSON</button>
+    <button id="exportBtn">Export CSV</button>
+    <button id="resetBtn" class="ghost">Reset month</button>
+    <input id="restoreFile" type="file" accept="application/json" style="display:none"/>
+  </div>
+</header>
 
-<div class="card">
-  <h2>CKP Cloud Sync Test</h2>
+<main class="layout">
+  <section class="left">
+    <div class="monthTitle" id="monthTitle"></div>
+    <div class="tableWrap">
+      <div class="grid header">
+        <div>Date</div>
+        <div>Code</div>
+        <div>Count</div>
+        <div>Base (hh:mm)</div>
+        <div>Base (dec)</div>
+        <div>+2.5</div>
+        <div>Override</div>
+        <div>Total</div>
+      </div>
+      <div id="rows"></div>
+      <div class="grid footer">
+        <div class="muted">Totals</div>
+        <div></div>
+        <div class="num" id="totDays">0</div>
+        <div class="muted num">—</div>
+        <div class="num" id="totBase">0.00</div>
+        <div class="num" id="totOT">0.00</div>
+        <div class="num" id="totOV">0.00</div>
+        <div class="num" id="totTotal">0.00</div>
+      </div>
+    </div>
 
-  <label>Month Key</label>
-  <input id="monthKey" value="2026-01">
+    <div class="note">
+      Time entry: type 8:27 or 8.45. Data saves automatically on this device.
+    </div>
+  </section>
 
-  <label>Test Value</label>
-  <input id="testValue" placeholder="Type something">
+  <aside class="right">
+    <div class="card">
+      <div class="pilot">
+        <div class="pilotName">Robert Tate</div>
+        <div class="pilotId">ID: 751597</div>
 
-  <button onclick="saveData()">Save to Supabase</button>
-  <button onclick="loadData()">Load from Supabase</button>
-</div>
+        <div class="pilotMeta">
+          <div>
+            <span class="muted">Fleet</span>
+            <div class="metaVal">737</div>
+          </div>
+          <div>
+            <span class="muted">SH/FS</span>
+            <div class="metaVal">
+              <select id="shfsSelect" class="shfsSel">
+                <option value="FS">FS</option>
+                <option value="SH">SH</option>
+              </select>
+            </div>
+          </div>
+        </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <div class="pillRow">
+          <div class="pill">
+            <span>Line Rotation?</span>
+            <select id="lrSelect">
+              <option value="No">No</option>
+              <option value="Yes">Yes</option>
+            </select>
+          </div>
+          <div class="pill">
+            <span>Union Dues?</span>
+            <select id="udSelect">
+              <option value="No">No</option>
+              <option value="Yes">Yes</option>
+            </select>
+          </div>
+        </div>
+      </div>
 
+      <div class="summary">
+        <div class="sumRow">
+          <div>Pilots Regular Pay</div>
+          <div class="num" id="sumRegular">0.00</div>
+        </div>
+        <div class="sumRow">
+          <div>CKP Add'l Day Premium (2.5)</div>
+          <div class="num" id="sumAddl">0.00</div>
+        </div>
+        <div class="sumRow">
+          <div>CKP Duties (Override)</div>
+          <div class="num" id="sumOverride">0.00</div>
+        </div>
+        <div class="divider"></div>
+        <div class="sumRow total">
+          <div>Total Hours</div>
+          <div class="num" id="sumGrand">0.00</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</main>
 <script>
+(() => {
+  const ROWS_PER_MONTH = 31;
 
-// ===== SUPABASE CONFIG =====
-const SUPABASE_URL = "https://ephkcxaggqspklvywxpl.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_I86rCHvEzTwfScSzZ4hV7Q_J6oJbC64";
-
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// unique device ID stored locally
-const DEVICE_KEY = "ckp-device-id";
-let DEVICE_ID = localStorage.getItem(DEVICE_KEY);
-
-if(!DEVICE_ID){
-  DEVICE_ID = crypto.randomUUID();
-  localStorage.setItem(DEVICE_KEY, DEVICE_ID);
-}
-
-// ===== SAVE FUNCTION =====
-async function saveData() {
-
-  const month = document.getElementById("monthKey").value;
-  const value = document.getElementById("testValue").value;
-
-  const { error } = await supabase
-    .from("ckp_months")
-    .upsert(
-      {
-        user_id: DEVICE_ID,
-        month_key: month,
-        payload: { test: value }
-      },
-      { onConflict: "user_id,month_key" }
-    );
-
-  if(error){
-    alert("Error: " + error.message);
-  } else {
-    alert("Saved to cloud ✔");
+  // ====== FED TABLE (PASTE CHUNK 4 RIGHT AFTER THIS LINE) ======
+  const FED_TABLE = [    
+    [0.0, 0.1758605169950883],
+    [250.0, 0.1758605169950883],
+    [500.0, 0.1758605169950883],
+    [750.0, 0.1758605169950883],
+    [1000.0, 0.1758605169950883],
+    [1250.0, 0.1758605169950883],
+    [1500.0, 0.1758605169950883],
+    [1750.0, 0.1758605169950883],
+    [2000.0, 0.1758605169950883],
+    [2250.0, 0.1758605169950883],
+    [2500.0, 0.1758605169950883],
+    [2750.0, 0.1758605169950883],
+    [3000.0, 0.1758605169950883],
+    [3250.0, 0.1758605169950883],
+    [3500.0, 0.1758605169950883],
+    [3750.0, 0.1758605169950883],
+    [4000.0, 0.1758605169950883],
+    [4250.0, 0.1758605169950883],
+    [4500.0, 0.1758605169950883],
+    [4750.0, 0.1758605169950883],
+    [5000.0, 0.1758605169950883],
+    [5250.0, 0.1758605169950883],
+    [5500.0, 0.1758605169950883],
+    [5750.0, 0.1758605169950883],
+    [6000.0, 0.1758605169950883],
+    [6250.0, 0.1758605169950883],
+    [6500.0, 0.1758605169950883],
+    [6750.0, 0.1758605169950883],
+    [7000.0, 0.1758605169950883],
+    [7250.0, 0.1758605169950883],
+    [7500.0, 0.1758605169950883],
+    [7750.0, 0.1758605169950883],
+    [8000.0, 0.1758605169950883],
+    [8250.0, 0.1758605169950883],
+    [8500.0, 0.1758605169950883],
+    [8750.0, 0.1758605169950883],
+    [9000.0, 0.1758605169950883],
+    [9250.0, 0.1758605169950883],
+    [9500.0, 0.1758605169950883],
+    [9750.0, 0.1758605169950883],
+    [10000.0, 0.1758605169950883]
+  ];
+        const s=loadSettings();
+      s[key]=cast($(id).value);
+      saveSettings(s);
+      if(key==="contractYear"){
+        initMonths(s.contractYear);
+        monthSelect.value=keyFor(s.contractYear,1);
+      }
+      render();
+    });
   }
-}
 
-// ===== LOAD FUNCTION =====
-async function loadData() {
-
-  const month = document.getElementById("monthKey").value;
-
-  const { data, error } = await supabase
-    .from("ckp_months")
-    .select("payload")
-    .eq("user_id", DEVICE_ID)
-    .eq("month_key", month)
-    .maybeSingle();
-
-  if(error){
-    alert("Error: " + error.message);
-    return;
+  function doBackup(){
+    const s=loadSettings();
+    const months=[];
+    for(let m=1;m<=12;m++){
+      const k=keyFor(s.contractYear,m);
+      months.push({key:k, data: loadMonth(k)});
+    }
+    const payload={app:"CKP_Pay_Hours",version:"final",exportedAt:new Date().toISOString(),settings:s,months};
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download=`CKP_Pay_Hours_Backup_${s.contractYear}.json`;
+    a.click();
   }
 
-  if(data && data.payload){
-    document.getElementById("testValue").value = data.payload.test || "";
-    alert("Loaded from cloud ✔");
-  } else {
-    alert("Nothing saved yet.");
+  function doRestore(text){
+    const payload=JSON.parse(text);
+    if(!payload || payload.app!=="CKP_Pay_Hours") throw new Error("Not a CKP Pay Hours backup.");
+    if(payload.settings) saveSettings(payload.settings);
+    if(Array.isArray(payload.months)){
+      payload.months.forEach(item=>{
+        if(item && item.key && item.data){
+          localStorage.setItem(monthKey(item.key), JSON.stringify(item.data));
+        }
+      });
+    }
+    const s=loadSettings();
+    initMonths(s.contractYear);
+    monthSelect.value=keyFor(s.contractYear,1);
+    render();
+    alert("Restore complete ✅");
   }
-}
 
+  function exportCSV(){
+    const s=loadSettings();
+    const k=monthSelect.value;
+    const md=loadMonth(k);
+    const computed=computeRows(md.rows,s,md);
+    let csv="Month,Day,Code,Base_hhmm,Base_dec,CountDay,BaseHours,Add2_5,Override,PremOnOT,TotalHours\n";
+    computed.forEach(r=>{
+      csv += [
+        labelFor(k), r.day,
+        `"${String(r.code||"").replace(/"/g,'""')}"`,
+        `"${String(r.base||"").replace(/"/g,'""')}"`,
+        fmt2(r.baseDec),
+        r.count,
+        fmt2(r.baseHrs),
+        fmt2(r.add25),
+        fmt2(r.ov),
+        fmt2(r.premOT),
+        fmt2(r.total)
+      ].join(",") + "\n";
+    });
+    const blob=new Blob([csv],{type:"text/csv"});
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download=`CKP_Pay_Hours_${k}.csv`;
+    a.click();
+  }
+
+  // INIT
+  const s0=loadSettings();
+  initMonths(s0.contractYear);
+  monthSelect.value=keyFor(s0.contractYear,1);
+  monthSelect.addEventListener("change",render);
+
+  $("resetBtn").addEventListener("click",()=>{
+    localStorage.removeItem(monthKey(monthSelect.value));
+    render();
+  });
+
+  $("backupBtn").addEventListener("click", doBackup);
+  $("restoreBtn").addEventListener("click", ()=> $("restoreFile").click());
+  $("restoreFile").addEventListener("change", async (e)=>{
+    const f=e.target.files && e.target.files[0];
+    if(!f) return;
+    try{ doRestore(await f.text()); }
+    catch(err){ alert("Restore failed: " + (err?.message||String(err))); }
+    finally{ e.target.value=""; }
+  });
+
+  $("exportBtn").addEventListener("click", exportCSV);
+
+  shfsSelect.addEventListener("change",()=>{const d=loadMonth(monthSelect.value); d.shfs=shfsSelect.value; saveMonth(monthSelect.value,d); schedulePush(monthSelect.value,"edit");});
+  lrSelect.addEventListener("change",()=>{const d=loadMonth(monthSelect.value); d.lineRotation=lrSelect.value; saveMonth(monthSelect.value,d); render(); schedulePush(monthSelect.value,"edit");});
+  udSelect.addEventListener("change",()=>{const d=loadMonth(monthSelect.value); d.unionDues=udSelect.value; saveMonth(monthSelect.value,d); render(); schedulePush(monthSelect.value,"edit");});
+  otherTaxableInp.addEventListener("change",()=>{const d=loadMonth(monthSelect.value); d.otherTaxable=Number(otherTaxableInp.value||0); saveMonth(monthSelect.value,d); render(); schedulePush(monthSelect.value,"edit");});
+
+  bindSetting("contractYear","contractYear",v=>parseInt(v,10)||DEFAULTS.contractYear);
+  bindSetting("payRate","payRate",v=>Number(v)||DEFAULTS.payRate);
+  bindSetting("daily","daily",v=>Number(v)||DEFAULTS.daily);
+  bindSetting("ovpct","ovpct",v=>Number(v)||DEFAULTS.ovpct);
+  bindSetting("lrovr","lrOvr",v=>Number(v)||DEFAULTS.lrOvr);
+  bindSetting("otAfter","otAfterDay",v=>parseInt(v,10)||DEFAULTS.otAfterDay);
+  bindSetting("otPrem","otPremHours",v=>Number(v)||DEFAULTS.otPremHours);
+  bindSetting("vacHrs","vacHrs",v=>Number(v)||DEFAULTS.vacHrs);
+  bindSetting("sickHrs","sickHrs",v=>Number(v)||DEFAULTS.sickHrs);
+  bindSetting("dcPct","dcPct",v=>Number(v)||DEFAULTS.dcPct);
+  bindSetting("dcCap","dcCap",v=>Number(v)||DEFAULTS.dcCap);
+  bindSetting("unionPct","unionPct",v=>Number(v)||DEFAULTS.unionPct);
+  bindSetting("preTaxPP","preTaxPP",v=>Number(v)||DEFAULTS.preTaxPP);
+  bindSetting("afterTaxPP","afterTaxPP",v=>Number(v)||DEFAULTS.afterTaxPP);
+  bindSetting("afterTaxExtra","afterTaxExtra",v=>Number(v)||DEFAULTS.afterTaxExtra);
+  bindSetting("medRate","medRate",v=>Number(v)||DEFAULTS.medRate);
+  bindSetting("addMedRate","addMedRate",v=>Number(v)||DEFAULTS.addMedRate);
+  bindSetting("addMedThresh","addMedThresh",v=>Number(v)||DEFAULTS.addMedThresh);
+  bindSetting("ssRate","ssRate",v=>Number(v)||DEFAULTS.ssRate);
+  bindSetting("ssWageBase","ssWageBase",v=>Number(v)||DEFAULTS.ssWageBase);
+  bindSetting("grossSeed","grossYTDSeed",v=>Number(v)||DEFAULTS.grossYTDSeed);
+  bindSetting("netSeed","netYTDSeed",v=>Number(v)||DEFAULTS.netYTDSeed);
+
+  $("codeList").addEventListener("change",()=>{
+    const s=loadSettings();
+    const parts=$("codeList").value.split(",").map(x=>x.trim()).filter(Boolean);
+    if(parts[0]!== "") parts.unshift("");
+    s.codes=parts;
+    saveSettings(s);
+    render();
+    // settings changed -> push active month so phone catches new codes
+    schedulePush(monthSelect.value,"settings");
+  });
+
+  // Cloud buttons
+  $("cloudPushBtn").addEventListener("click",()=>pushMonthToCloud(monthSelect.value,"manual"));
+  $("cloudPullBtn").addEventListener("click", async ()=>{
+    const changed = await pullMonthFromCloud(monthSelect.value,"manual");
+    if(changed) render();
+  });
+
+  // Auto-pull when month changes (so phone/computer stay aligned)
+  monthSelect.addEventListener("change", async ()=>{
+    await pullMonthFromCloud(monthSelect.value,"auto");
+    render();
+  });
+
+  // Initial pull for January on first load (non-blocking)
+  setCloudTag("Cloud: connecting…");
+  pullMonthFromCloud(monthSelect.value,"auto").then(()=>{ setCloudTag("Cloud: ready ✅"); render(); });
+
+  render();
+})();
 </script>
-
 </body>
 </html>
