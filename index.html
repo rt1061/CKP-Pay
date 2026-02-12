@@ -15,16 +15,22 @@
 <title>CKP Pay Hours</title>
 <style>
 :root{
-  --bg:#050607;          /* near-black background (gap between boxes) */
-  --panel:#0e1f17;
-  --text:#f2f7f4;
-  --muted:#9fb5a8;
-  --line:#1f4a37;
-  --accent:#2fd47a;
-  --top:#0f4b31;
+  --bg:#060b14;               /* deep navy black */
+  --panel:#0e1624;            /* card background */
+  --panel-2:#0b1320;          /* slightly darker */
+  --text:#f2f6ff;             /* crisp white */
+  --muted:#8fa3c2;            /* cool muted blue */
+  --line:rgba(255,255,255,.06);
+  --accent:#4ea1ff;           /* clean blue highlight */
+  --gold:#ffb347;             /* orange accent for totals */
 }
 *{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  background:linear-gradient(180deg,#071226 0%, #050a14 100%);
+  color:var(--text);
+}
 .topbar{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--top);border-bottom:1px solid rgba(255,255,255,.08)}
 .brand{font-weight:900}
 .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -111,14 +117,11 @@ input.baseInp{text-align:right;font-variant-numeric:tabular-nums}
 .footer{background:rgba(255,255,255,.04);font-weight:900}
 
 .card{
-  background:var(--panel);
+  background:linear-gradient(145deg,#0e1624,#0b1320);
   border:1px solid rgba(255,255,255,.06);
-  border-radius:16px;
-  padding:14px;
-
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,.04),
-    0 15px 35px rgba(0,0,0,.55);
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 20px 50px rgba(0,0,0,.55);
 }
 .pilot{padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.07)}
 .pilotName{font-size:22px;font-weight:900}
@@ -143,15 +146,27 @@ input.baseInp{text-align:right;font-variant-numeric:tabular-nums}
 .sumRow.total{
   font-size:20px;
   font-weight:900;
-  color:#2fd47a;
+  background:linear-gradient(90deg,#c4571f,#f08c2a);
+  padding:12px 14px;
+  border-radius:8px;
+  color:white;
 }
 .divider{height:1px;background:rgba(255,255,255,.10);margin:8px 0}
 
 .netMini{margin-top:10px;border-top:1px solid rgba(255,255,255,.07);padding-top:10px}
-.netChip{display:flex;justify-content:space-between;align-items:center;background:rgba(106,168,255,.10);border:1px solid rgba(106,168,255,.35);border-radius:12px;padding:10px 12px;margin-top:8px}
+.netChip{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(78,161,255,.10);
+  border:1px solid rgba(78,161,255,.35);
+  border-radius:12px;
+  padding:12px 14px;
+  margin-top:8px;
+}
 .netChip .lbl{font-weight:900}
 .netChip .val{
-  color:#f5c542;
+  color:var(--gold);
   font-weight:900;
 }
 .netChip .val{font-variant-numeric:tabular-nums;font-weight:950}
