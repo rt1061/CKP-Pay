@@ -15,12 +15,12 @@
 <title>CKP Pay Hours</title>
 <style>
 :root{
-  --bg:#0b1f16;          /* Deep green background */
-  --panel:#0e1f17;       /* Darker card background */
-  --text:#f2f7f4;        /* Main text */
-  --muted:#9fb5a8;       /* Secondary text */
-  --line:#1f4a37;        /* Borders */
-  --accent:#2fd47a;      /* Bright green highlight */
+  --bg:#050607;          /* near-black background (gap between boxes) */
+  --panel:#0e1f17;
+  --text:#f2f7f4;
+  --muted:#9fb5a8;
+  --line:#1f4a37;
+  --accent:#2fd47a;
   --top:#0f4b31;
 }
 *{box-sizing:border-box}
@@ -38,7 +38,16 @@ button.ghost{background:rgba(255,255,255,.08)}button.ghost:hover{background:rgba
 @media(max-width:1180px){.layout{grid-template-columns:1fr}.right{order:-1}}
 
 .monthTitle{font-size:18px;font-weight:900;margin:0 0 10px}
-.tableWrap{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:auto}
+.tableWrap{
+  background:var(--panel);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:16px;
+  overflow:auto;
+
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.04),
+    0 15px 35px rgba(0,0,0,.55);
+}
 .grid{display:grid;grid-template-columns:70px 160px 105px 165px 105px 110px 110px 110px;align-items:center}
 .header{
   background:rgba(0,0,0,.32);
@@ -101,7 +110,16 @@ input.baseInp{text-align:right;font-variant-numeric:tabular-nums}
 .note{margin-top:10px;color:var(--muted);font-size:13px}
 .footer{background:rgba(255,255,255,.04);font-weight:900}
 
-.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px}
+.card{
+  background:var(--panel);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:16px;
+  padding:14px;
+
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.04),
+    0 15px 35px rgba(0,0,0,.55);
+}
 .pilot{padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.07)}
 .pilotName{font-size:22px;font-weight:900}
 .pilotId{color:var(--muted);margin-top:2px}
@@ -150,7 +168,17 @@ details summary{cursor:pointer}
 .pill select,.pill input{padding:6px 8px;border-radius:10px;min-width:120px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--text)}
 .pill input{text-align:right}
 
-.financeWrap{margin-top:16px;background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:auto}
+.financeWrap{
+  margin-top:16px;
+  background:var(--panel);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:16px;
+  overflow:auto;
+
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.04),
+    0 15px 35px rgba(0,0,0,.55);
+}
 .financeTitle{padding:12px 12px 0 12px;font-weight:900}
 .finGrid{
     display:grid;
