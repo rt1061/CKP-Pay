@@ -68,7 +68,12 @@ input.baseInp{text-align:right;font-variant-numeric:tabular-nums}
 .summary{margin-top:12px}
 .sumRow{display:flex;justify-content:space-between;align-items:center;padding:8px 0}
 .sumRow.indent{padding-left:16px;color:rgba(255,255,255,.88)}
-.sumRow.total{font-size:18px;font-weight:950}
+.sumRow.total{
+  font-size:20px;
+  font-weight:900;
+  color:#2fd47a;
+  text-shadow:0 0 6px rgba(47,212,122,0.4);
+}
 .divider{height:1px;background:rgba(255,255,255,.10);margin:8px 0}
 
 .netMini{margin-top:10px;border-top:1px solid rgba(255,255,255,.07);padding-top:10px}
@@ -98,6 +103,11 @@ details summary{cursor:pointer}
 .finNet{background:rgba(106,168,255,.14)}
 .finNet .finCell{border-top:1px solid rgba(106,168,255,.35)}
 .finNet .finLabel{color:rgba(255,255,255,.92);font-weight:950}
+.finNet .num{
+  color:#ffd24a;
+  font-weight:900;
+  text-shadow:0 0 6px rgba(255,210,74,0.4);
+}
 .inlineInput{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 12px 0 12px}
 .inlineInput input{width:170px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--text);padding:8px;border-radius:10px;outline:none}
 .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:12px;color:rgba(255,255,255,.85)}
