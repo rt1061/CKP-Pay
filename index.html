@@ -316,7 +316,7 @@ button.ok:hover{background:rgba(106,168,255,.32)}
       const local = loadMonth(monthKey);
 
       const remoteTs = Number(remote._cloudTs || 0);
-      const localTs = Number(local._cloudTs || 0);
+      const localTs = Number(local._localTs || 0);
 
       // Only overwrite local if cloud is newer
       if (remoteTs && remoteTs >= localTs) {
