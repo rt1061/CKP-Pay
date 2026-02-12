@@ -41,7 +41,22 @@ button.ghost{background:rgba(255,255,255,.08)}button.ghost:hover{background:rgba
 .tableWrap{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:auto}
 .grid{display:grid;grid-template-columns:70px 160px 105px 165px 105px 110px 110px 110px;align-items:center}
 .header{background:rgba(0,0,0,.32); ...};font-size:12px;font-weight:900;position:sticky;top:0;z-index:10}
-.header>div,.footer>div{padding:12px 10px;border-right:1px solid rgba(255,255,255,.06)}
+.header>div,.footer>div{
+  padding:10px 10px;
+  border-right:1px solid rgba(255,255,255,.06);
+  display:flex;
+  align-items:center;
+}
+/* Center header labels horizontally */
+.header > div{
+  justify-content: center;
+}
+
+/* Keep Date and Code left-aligned */
+.header > div:first-child,
+.header > div:nth-child(2){
+  justify-content: flex-start;
+}
 .header>div:last-child,.footer>div:last-child{border-right:none}
 .row{
   border-top:1px solid rgba(255,255,255,.06);
