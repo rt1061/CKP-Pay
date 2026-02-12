@@ -1,128 +1,696 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>CKP Pay Hours</title>
 <style>
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont;background:#0f1115;color:#e8ecf1}
-.top{background:#5a2b8a;padding:12px 16px;font-weight:900}
-.wrap{padding:16px}
-select,input{padding:8px;border-radius:8px;border:1px solid #444;background:#1b1f2a;color:#fff}
-table{width:100%;border-collapse:collapse;margin-top:12px}
-th,td{padding:8px;border-bottom:1px solid #333;text-align:right}
-th{text-align:left;background:#1a1e28}
-.num{text-align:right}
-.footer{font-weight:900}
-.card{background:#131722;padding:12px;border-radius:12px;margin-top:16px}
-button{padding:8px 12px;border-radius:8px;border:none;background:#6aa8ff;color:#000;font-weight:900;margin-top:8px}
+:root{--bg:#0f1115;--panel:#131722;--text:#e8ecf1;--muted:#a7b0bd;--line:#273042;--accent:#6aa8ff;--top:#5a2b8a}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
+.topbar{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--top);border-bottom:1px solid rgba(255,255,255,.08)}
+.brand{font-weight:900}
+.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+select,button,input{font:inherit}
+select{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);color:var(--text);padding:8px 10px;border-radius:10px;outline:none}
+button{border:none;background:rgba(255,255,255,.15);color:var(--text);padding:10px 12px;border-radius:12px;cursor:pointer;white-space:nowrap}
+button:hover{background:rgba(255,255,255,.22)}
+button.ghost{background:rgba(255,255,255,.08)}button.ghost:hover{background:rgba(255,255,255,.14)}
+
+.layout{display:grid;grid-template-columns:1fr 420px;gap:16px;padding:16px}
+@media(max-width:1180px){.layout{grid-template-columns:1fr}.right{order:-1}}
+
+.monthTitle{font-size:18px;font-weight:900;margin:0 0 10px}
+.tableWrap{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:auto}
+.grid{display:grid;grid-template-columns:70px 160px 105px 165px 105px 110px 110px 110px;align-items:center}
+.header{background:rgba(255,255,255,.06);font-size:12px;font-weight:900;position:sticky;top:0;z-index:10}
+.header>div,.footer>div{padding:12px 10px;border-right:1px solid rgba(255,255,255,.06)}
+.header>div:last-child,.footer>div:last-child{border-right:none}
+.row{border-top:1px solid rgba(255,255,255,.06)}
+.cell{padding:10px;border-right:1px solid rgba(255,255,255,.06)}
+.cell:last-child{border-right:none}
+.datePill{display:inline-flex;align-items:center;justify-content:center;width:34px;height:24px;border:2px solid var(--accent);border-radius:6px;font-weight:900;background:rgba(106,168,255,.06)}
+select.codeSel,input.baseInp{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--text);padding:8px;border-radius:10px;outline:none}
+input.baseInp{text-align:right;font-variant-numeric:tabular-nums}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.note{margin-top:10px;color:var(--muted);font-size:13px}
+.footer{background:rgba(255,255,255,.04);font-weight:900}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px}
+.pilot{padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.07)}
+.pilotName{font-size:22px;font-weight:900}
+.pilotId{color:var(--muted);margin-top:2px}
+.pilotMeta{display:flex;gap:18px;margin-top:10px;color:var(--muted);flex-wrap:wrap}
+.metaVal{color:var(--text);font-weight:900;margin-top:2px}
+.summary{margin-top:12px}
+.sumRow{display:flex;justify-content:space-between;align-items:center;padding:8px 0}
+.sumRow.indent{padding-left:16px;color:rgba(255,255,255,.88)}
+.sumRow.total{font-size:18px;font-weight:950}
+.divider{height:1px;background:rgba(255,255,255,.10);margin:8px 0}
+
+.netMini{margin-top:10px;border-top:1px solid rgba(255,255,255,.07);padding-top:10px}
+.netChip{display:flex;justify-content:space-between;align-items:center;background:rgba(106,168,255,.10);border:1px solid rgba(106,168,255,.35);border-radius:12px;padding:10px 12px;margin-top:8px}
+.netChip .lbl{font-weight:900}
+.netChip .val{font-variant-numeric:tabular-nums;font-weight:950}
+
+details summary{cursor:pointer}
+.settingsGrid{margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.settingsGrid label{display:flex;flex-direction:column;gap:4px;font-size:12px}
+.settingsGrid input{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--text);padding:8px;border-radius:10px;outline:none}
+.small{font-size:12px}
+.shfsSel{background:transparent;border:none;color:var(--text);font-weight:900;padding:0;outline:none}
+
+.pillRow{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.pill{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
+.pill select,.pill input{padding:6px 8px;border-radius:10px;min-width:120px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--text)}
+.pill input{text-align:right}
+
+.financeWrap{margin-top:16px;background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:auto}
+.financeTitle{padding:12px 12px 0 12px;font-weight:900}
+.finGrid{display:grid;grid-template-columns:200px 135px 135px 135px 135px 135px;align-items:center}
+.finHead{background:rgba(255,255,255,.06);font-size:12px;font-weight:900;position:sticky;top:0}
+.finCell{padding:10px;border-top:1px solid rgba(255,255,255,.06);border-right:1px solid rgba(255,255,255,.06)}
+.finCell:last-child{border-right:none}
+.finLabel{color:var(--muted);font-weight:800}
+.finNet{background:rgba(106,168,255,.14)}
+.finNet .finCell{border-top:1px solid rgba(106,168,255,.35)}
+.finNet .finLabel{color:rgba(255,255,255,.92);font-weight:950}
+.inlineInput{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 12px 0 12px}
+.inlineInput input{width:170px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--text);padding:8px;border-radius:10px;outline:none}
+.kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:12px;color:rgba(255,255,255,.85)}
 </style>
 </head>
 <body>
+<header class="topbar">
+  <div class="brand">CKP Pay Hours</div>
+  <div class="actions">
+    <select id="monthSelect"></select>
+    <button id="backupBtn">Backup JSON</button>
+    <button id="restoreBtn">Restore JSON</button>
+    <button id="exportBtn">Export CSV</button>
+    <button id="resetBtn" class="ghost">Reset month</button>
+    <input id="restoreFile" type="file" accept="application/json" style="display:none"/>
+  </div>
+</header>
+<main class="layout">
+  <section class="left">
+    <div class="monthTitle" id="monthTitle"></div>
+    <div class="tableWrap">
+      <div class="grid header">
+        <div>Date</div><div>Code</div><div>Count</div>
+        <div>Base (hh:mm)</div><div>Base (dec)</div>
+        <div>+2.5</div><div>Override</div><div>Total</div>
+      </div>
+      <div id="rows"></div>
+      <div class="grid footer">
+        <div class="muted">Totals</div><div></div>
+        <div class="num" id="totDays">0</div>
+        <div class="muted num">—</div>
+        <div class="num" id="totBase">0.00</div>
+        <div class="num" id="totOT">0.00</div>
+        <div class="num" id="totOV">0.00</div>
+        <div class="num" id="totTotal">0.00</div>
+      </div>
+    </div>
 
-<div class="top">CKP Pay Hours</div>
-<div class="wrap">
+    <div class="financeWrap">
+      <div class="financeTitle">Finance Summary (Dollars)</div>
+      <div class="inlineInput">
+        <div class="muted">Other Taxable (True-Up only):</div>
+        <input id="otherTaxable" type="number" step="0.01" value="0"/>
+        <div class="muted small">Per diem / sit time / misc paid on True-Up</div>
+      </div>
+      <div class="finGrid finHead" style="margin-top:10px">
+        <div class="finCell finLabel"></div>
+        <div class="finCell finLabel">Advance</div>
+        <div class="finCell finLabel">True-Up</div>
+        <div class="finCell finLabel">Month</div>
+        <div class="finCell finLabel">YTD</div>
+        <div class="finCell finLabel">Prev YTD</div>
+      </div>
+      <div id="financeRows"></div>
+    </div>
 
-<select id="monthSel">
-<option>Jan 2026</option>
-<option>Feb 2026</option>
-<option>Mar 2026</option>
-<option>Apr 2026</option>
-<option>May 2026</option>
-<option>Jun 2026</option>
-<option>Jul 2026</option>
-<option>Aug 2026</option>
-<option>Sep 2026</option>
-<option>Oct 2026</option>
-<option>Nov 2026</option>
-<option>Dec 2026</option>
-</select>
+    <div class="note">
+      Time entry: type <span class="kbd">8:27</span> (or <span class="kbd">8.45</span>). It saves on this device. Use Backup/Restore to move data between phone/computer.
+    </div>
+  </section>
 
-<table>
-<thead>
-<tr>
-<th>Date</th>
-<th>Code</th>
-<th>Base (hh:mm)</th>
-<th>Total</th>
-</tr>
-</thead>
-<tbody id="rows"></tbody>
-</table>
+  <aside class="right">
+    <div class="card">
+      <div class="pilot">
+        <div class="pilotName">Robert Tate</div>
+        <div class="pilotId">ID: 751597</div>
 
-<div class="card">
-<div><b>Total Hours:</b> <span id="totalHrs">0.00</span></div>
-</div>
+        <div class="pilotMeta">
+          <div><span class="muted">Fleet</span><div class="metaVal">737</div></div>
+          <div>
+            <span class="muted">SH/FS</span>
+            <div class="metaVal">
+              <select id="shfsSelect" class="shfsSel">
+                <option value="FS">FS</option>
+                <option value="SH">SH</option>
+              </select>
+            </div>
+          </div>
+        </div>
 
-<div class="card">
-<div><b>Finance Summary (Dollars)</b></div>
-<div>Gross: <span id="gross">$0.00</span></div>
-<div>Fed: <span id="fed">$0.00</span></div>
-<div>Medicare: <span id="med">$0.00</span></div>
-<div>SS: <span id="ss">$0.00</span></div>
-<div><b>NET:</b> <span id="net">$0.00</span></div>
-</div>
+        <div class="pillRow">
+          <div class="pill">
+            <span>Line Rotation?</span>
+            <select id="lrSelect"><option value="No">No</option><option value="Yes">Yes</option></select>
+          </div>
+          <div class="pill">
+            <span>Union Dues?</span>
+            <select id="udSelect"><option value="No">No</option><option value="Yes">Yes</option></select>
+          </div>
+        </div>
+      </div>
 
-</div>
+      <div class="summary">
+        <div class="sumRow"><div>Pilots Regular Pay</div><div class="num" id="sumRegular">0.00</div></div>
+        <div class="sumRow"><div>CKP Day Adjustment</div><div class="num" id="sumDayAdj">0.00</div></div>
+        <div class="sumRow"><div>CKP Add'l Day Premium (2.5)</div><div class="num" id="sumAddl">0.00</div></div>
+        <div class="sumRow"><div>CKP Duties (Override)</div><div class="num" id="sumOverride">0.00</div></div>
+        <div class="sumRow indent"><div><i>Prem on OT</i></div><div class="num" id="sumPremOT">0.00</div></div>
+        <div class="divider"></div>
+        <div class="sumRow total"><div>Total Hours</div><div class="num" id="sumGrand">0.00</div></div>
+
+        <div class="netMini">
+          <div class="muted small">NET (Dollars)</div>
+          <div class="netChip"><div class="lbl">Advance</div><div class="val" id="netAdvMini">$0.00</div></div>
+          <div class="netChip"><div class="lbl">True-Up</div><div class="val" id="netTrueMini">$0.00</div></div>
+        </div>
+      </div>
+
+      <details class="settings">
+        <summary>Settings</summary>
+        <div class="settingsGrid">
+          <label><span>Contract Year</span><input id="contractYear" type="number" step="1"/></label>
+          <label><span>Pay rate ($/hr)</span><input id="payRate" type="number" step="0.01"/></label>
+
+          <label><span>Daily guarantee (hrs)</span><input id="daily" type="number" step="0.01"/></label>
+          <label><span>Regular pay (hrs)</span><input id="regHours" type="number" step="0.01"/></label>
+
+          <label><span>Override %</span><input id="ovpct" type="number" step="0.01"/></label>
+          <label><span>Line rotation %</span><input id="lrovr" type="number" step="0.01"/></label>
+
+          <label><span>OT after day</span><input id="otAfter" type="number" step="1"/></label>
+          <label><span>OT prem hours</span><input id="otPrem" type="number" step="0.01"/></label>
+
+          <label><span>Vacation hrs/day</span><input id="vacHrs" type="number" step="0.0001"/></label>
+          <label><span>Sick hrs/day</span><input id="sickHrs" type="number" step="0.0001"/></label>
+
+          <label><span>DC %</span><input id="dcPct" type="number" step="0.001"/></label>
+          <label><span>DC comp cap</span><input id="dcCap" type="number" step="1"/></label>
+
+          <label><span>Union dues %</span><input id="unionPct" type="number" step="0.001"/></label>
+          <label><span>Pre-tax / check</span><input id="preTaxPP" type="number" step="0.01"/></label>
+
+          <label><span>After-tax / check</span><input id="afterTaxPP" type="number" step="0.01"/></label>
+          <label><span>After-tax extra</span><input id="afterTaxExtra" type="number" step="0.01"/></label>
+
+          <label><span>Medicare rate</span><input id="medRate" type="number" step="0.0001"/></label>
+          <label><span>Add'l Med rate</span><input id="addMedRate" type="number" step="0.0001"/></label>
+
+          <label><span>Add'l Med thresh</span><input id="addMedThresh" type="number" step="1"/></label>
+          <label><span>SS rate</span><input id="ssRate" type="number" step="0.0001"/></label>
+
+          <label><span>SS wage base</span><input id="ssWageBase" type="number" step="1"/></label>
+          <label><span>Gross YTD seed</span><input id="grossSeed" type="number" step="0.01"/></label>
+
+          <label><span>NET YTD seed</span><input id="netSeed" type="number" step="0.01"/></label>
+          <label style="grid-column:1/-1"><span>Codes (comma)</span><input id="codeList" type="text"/></label>
+        </div>
+        <div class="muted small" style="margin-top:8px;line-height:1.35">
+          Finance: Fed uses FedRate_Linear LOOKUP. Social Sec is capped. Add'l Medicare uses threshold. Other Taxable only applies to True-Up.
+        </div>
+      </details>
+    </div>
+  </aside>
+</main>
 
 <script>
-const payRate = 390.30;
-const overridePct = 0.20;
-const medRate = 0.0145;
-const ssRate = 0.062;
-const fedRate = 0.22;
+(() => {
+  const ROWS_PER_MONTH = 31;
+  const FED_TABLE = [[0.0, 0.1758605169950883], [250.0, 0.1758605169950883], [500.0, 0.1758605169950883], [750.0, 0.1758605169950883], [1000.0, 0.1758605169950883], [1250.0, 0.1758605169950883], [1500.0, 0.1758605169950883], [1750.0, 0.1758605169950883], [2000.0, 0.1758605169950883], [2250.0, 0.1758605169950883], [2500.0, 0.1758605169950883], [2750.0, 0.1758605169950883], [3000.0, 0.1758605169950883], [3250.0, 0.1758605169950883], [3500.0, 0.1758605169950883], [3750.0, 0.1758605169950883], [4000.0, 0.1758605169950883], [4250.0, 0.1758605169950883], [4500.0, 0.1758605169950883], [4750.0, 0.1758605169950883], [5000.0, 0.1758605169950883], [5250.0, 0.1758605169950883], [5500.0, 0.1758605169950883], [5750.0, 0.1758605169950883], [6000.0, 0.1758605169950883], [6250.0, 0.1758605169950883], [6500.0, 0.1758605169950883], [6750.0, 0.1758605169950883], [7000.0, 0.1758605169950883], [7250.0, 0.1758605169950883], [7500.0, 0.1758605169950883], [7750.0, 0.1758605169950883], [8000.0, 0.1758605169950883], [8250.0, 0.1758605169950883], [8500.0, 0.1758605169950883], [8750.0, 0.1758605169950883], [9000.0, 0.1758605169950883], [9250.0, 0.1758605169950883], [9500.0, 0.1758605169950883], [9750.0, 0.1758605169950883], [10000.0, 0.1758605169950883], [10250.0, 0.1758605169950883], [10500.0, 0.1758605169950883], [10750.0, 0.1758605169950883], [11000.0, 0.1758605169950883], [11250.0, 0.1758605169950883], [11500.0, 0.1758605169950883], [11750.0, 0.1758605169950883], [12000.0, 0.1758605169950883], [12250.0, 0.1758605169950883], [12500.0, 0.1758605169950883], [12750.0, 0.1758605169950883], [13000.0, 0.1758605169950883], [13250.0, 0.1758605169950883], [13500.0, 0.1758605169950883], [13750.0, 0.1758605169950883], [14000.0, 0.1758605169950883], [14250.0, 0.1758605169950883], [14500.0, 0.1758605169950883], [14750.0, 0.1758605169950883], [15000.0, 0.1758605169950883], [15250.0, 0.1758605169950883], [15500.0, 0.1758605169950883], [15750.0, 0.1758605169950883], [16000.0, 0.1758605169950883], [16250.0, 0.1758605169950883], [16500.0, 0.1761611635809352], [16750.0, 0.1766723282059469], [17000.0, 0.1771834928309586], [17250.0, 0.1776946574559703], [17500.0, 0.178205822080982], [17750.0, 0.1787169867059937], [18000.0, 0.1792281513310054], [18250.0, 0.1797393159560172], [18500.0, 0.1802504805810289], [18750.0, 0.1807616452060406], [19000.0, 0.1812728098310523], [19250.0, 0.1821844252360735], [19500.0, 0.1865239911996081], [19750.0, 0.1908635571631427], [20000.0, 0.1952031231266773], [20250.0, 0.1995426890902119], [20500.0, 0.2021839966933483], [20750.0, 0.2036567852068], [21000.0, 0.2051295737202516], [21250.0, 0.2066023622337033], [21500.0, 0.208075150747155], [21750.0, 0.2095479392606066], [22000.0, 0.2110207277740583], [22250.0, 0.21249351628751], [22500.0, 0.2139663048009617], [22750.0, 0.2154390933144133], [23000.0, 0.2157930818215546], [23250.0, 0.2160806003901906], [23500.0, 0.2163681189588266], [23750.0, 0.2133982665293827], [24000.0, 0.2102272666680518], [24250.0, 0.207056266806721], [24500.0, 0.2045631799017215], [24750.0, 0.224865620356569], [25000.0, 0.2218108951583009], [25250.0, 0.2168372062162178], [25500.0, 0.2118635172741348], [25750.0, 0.2104263079090665], [26000.0, 0.2156937853547243], [26250.0, 0.2209612628003822], [26500.0, 0.22622874024604], [26750.0, 0.2314962176916978], [27000.0, 0.2335832576134959], [27250.0, 0.2346010857755355], [27500.0, 0.2356189139375751], [27750.0, 0.2366367420996148], [28000.0, 0.2376545702616544], [28250.0, 0.238672398423694], [28500.0, 0.2396902265857337], [28750.0, 0.2407080547477733], [29000.0, 0.2387324479110545], [29250.0, 0.2363252932369861], [29500.0, 0.2339181385629177], [29750.0, 0.2315109838888494], [30000.0, 0.229103829214781], [30250.0, 0.2269726132138628], [30500.0, 0.2277240971976488], [30750.0, 0.2284755811814349], [31000.0, 0.229227065165221], [31250.0, 0.229978549149007], [31500.0, 0.2307300331327931], [31750.0, 0.2314815171165792], [32000.0, 0.2322330011003652], [32250.0, 0.2329844850841513], [32500.0, 0.2337359690679374], [32750.0, 0.2344874530517235], [33000.0, 0.2352389370355095], [33250.0, 0.2359904210192956], [33500.0, 0.2367419050030817], [33750.0, 0.2374933889868678], [34000.0, 0.2382448729706538], [34250.0, 0.2389963569544399], [34500.0, 0.239747840938226], [34750.0, 0.2405043337939773], [35000.0, 0.241299388341136], [35250.0, 0.2420944428882947], [35500.0, 0.2428894974354533], [35750.0, 0.243684551982612], [36000.0, 0.2444796065297707], [36250.0, 0.2452746610769294], [36500.0, 0.2460697156240881], [36750.0, 0.2468647701712467], [37000.0, 0.2476598247184054], [37250.0, 0.2484548792655641], [37500.0, 0.2492499338127228], [37750.0, 0.2500449883598814], [38000.0, 0.2508400429070401], [38250.0, 0.2516350974541988], [38500.0, 0.2524301520013574], [38750.0, 0.2532252065485161], [39000.0, 0.2540202610956748], [39250.0, 0.2548153156428334], [39500.0, 0.2556103701899921], [39750.0, 0.2564054247371508], [40000.0, 0.2572004792843094], [40250.0, 0.2579955338314682], [40500.0, 0.2587905883786268], [40750.0, 0.2595856429257855], [41000.0, 0.2603806974729442], [41250.0, 0.2611757520201028], [41500.0, 0.2619708065672615], [41750.0, 0.2627658611144202], [42000.0, 0.2635609156615789], [42250.0, 0.2643559702087375], [42500.0, 0.2651510247558962], [42750.0, 0.2659460793030549], [43000.0, 0.2667411338502135], [43250.0, 0.2675361883973722], [43500.0, 0.2683312429445309], [43750.0, 0.2691262974916896], [44000.0, 0.2699213520388483], [44250.0, 0.2707164065860069], [44500.0, 0.2715114611331656], [44750.0, 0.2723065156803243], [45000.0, 0.2731015702274829], [45250.0, 0.2738966247746416], [45500.0, 0.2746916793218003], [45750.0, 0.2754867338689589], [46000.0, 0.2762817884161176], [46250.0, 0.2770768429632763], [46500.0, 0.277871897510435], [46750.0, 0.2786669520575936], [47000.0, 0.2794620066047523], [47250.0, 0.280257061151911], [47500.0, 0.2810521156990697], [47750.0, 0.2818471702462284], [48000.0, 0.282642224793387], [48250.0, 0.2834372793405457], [48500.0, 0.2842323338877044], [48750.0, 0.285027388434863], [49000.0, 0.2858224429820217], [49250.0, 0.2866174975291804], [49500.0, 0.287412552076339], [49750.0, 0.2882076066234977], [50000.0, 0.2890026611706564], [50250.0, 0.289797715717815], [50500.0, 0.2905927702649738], [50750.0, 0.2913878248121324], [51000.0, 0.2921828793592911], [51250.0, 0.2929779339064498], [51500.0, 0.2937729884536084], [51750.0, 0.2945680430007671], [52000.0, 0.2953630975479258], [52250.0, 0.2961581520950844], [52500.0, 0.2969532066422431], [52750.0, 0.2977482611894018], [53000.0, 0.2981763503597739], [16352.96, 0.1758605169950883], [19223.85, 0.1817305066362878], [20352.24, 0.201317397986659], [20405.98, 0.2016301103892094], [22764.02, 0.2155216872942477], [23514.54, 0.2163848410387785], [24492.78, 0.2039768454213854], [24768.98, 0.226406981635901], [25663.67, 0.2086073425975319], [26812.9, 0.2328215150170254], [28781.5, 0.2408363010961903], [30228.16, 0.2269069635730392], [34721.26, 0.240412934323236], [52884.61, 0.2981763503597739], [53384.61, 0.299766], [53884.61, 0.301357], [54384.61, 0.302947], [54884.61, 0.304537], [55384.61, 0.306127], [55884.61, 0.307717], [56384.61, 0.309307], [56884.61, 0.310897], [57384.61, 0.312487], [57884.61, 0.314077], [58384.61, 0.315668], [58884.61, 0.317258], [59384.61, 0.318848], [59884.61, 0.320438], [60384.61, 0.322028], [60884.61, 0.323618], [61384.61, 0.325208], [61884.61, 0.326798], [62384.61, 0.328388], [62884.61, 0.329979], [63384.61, 0.331569], [63884.61, 0.333159], [64384.61, 0.334749], [64884.61, 0.336339], [65384.61, 0.337929], [65884.61, 0.339519], [66384.61, 0.341109], [66884.61, 0.342699], [67384.61, 0.34429], [67884.61, 0.34588], [68384.61, 0.34747], [68884.61, 0.34906], [69384.61, 0.35065], [69884.61, 0.35224], [70384.61, 0.35383]];
+  const DEFAULTS = {"contractYear": 2026, "payRate": 390.3, "daily": 6.0, "ovpct": 0.2, "lrOvr": 0.25, "vacHrs": 4.5833333333, "sickHrs": 6.0, "dcPct": 0.18, "dcCap": 360000.0, "preTaxPP": 569.64, "afterTaxPP": 250.57, "afterTaxExtra": 471.21, "unionPct": 0.01, "unionOnDefault": "No", "medRate": 0.0145, "addMedRate": 0.009, "addMedThresh": 200000.0, "ssRate": 0.062, "ssWageBase": 184500.0, "grossYTDSeed": 45712.85, "netYTDSeed": 28500.46, "regularPayHours": 90.0, "otAfterDay": 15, "otPremHours": 2.5, "codes": ["", "LC", "NH", "UG", "UGI", "WDAY", "Training", "Stan Meeting", "WKCXLD", "Vacation", "Sick"], "noOverrideCodes": ["WDAY", "Training", "Stan Meeting", "Vacation", "Sick", "WKCXLD"], "noCountCodes": ["Vacation", "Sick", "WKCXLD"]};
 
-function toDecimal(time){
- if(!time.includes(":")) return 0;
- let parts=time.split(":");
- return (parseInt(parts[0]) + parseInt(parts[1])/60).toFixed(2);
-}
+  const $ = id => document.getElementById(id);
+  const monthSelect = $("monthSelect");
+  const rowsEl = $("rows");
+  const financeRowsEl = $("financeRows");
+  const shfsSelect = $("shfsSelect");
+  const lrSelect = $("lrSelect");
+  const udSelect = $("udSelect");
+  const otherTaxableInp = $("otherTaxable");
 
-function recalc(){
- let total=0;
- document.querySelectorAll(".base").forEach(i=>{
-   let dec=parseFloat(toDecimal(i.value));
-   if(!isNaN(dec)) total+=dec;
- });
- document.getElementById("totalHrs").innerText=total.toFixed(2);
- 
- let gross=total*payRate;
- let fed=gross*fedRate;
- let med=gross*medRate;
- let ss=gross*ssRate;
- let net=gross-fed-med-ss;
- 
- document.getElementById("gross").innerText="$"+gross.toFixed(2);
- document.getElementById("fed").innerText="$"+fed.toFixed(2);
- document.getElementById("med").innerText="$"+med.toFixed(2);
- document.getElementById("ss").innerText="$"+ss.toFixed(2);
- document.getElementById("net").innerText="$"+net.toFixed(2);
-}
+  const settingsKey = "ckp:settings:vFinal";
+  const monthKey = k => `ckp:month:vFinal:${k}`;
 
-let tbody=document.getElementById("rows");
-for(let d=1;d<=31;d++){
- let tr=document.createElement("tr");
- tr.innerHTML=`
- <td>${d}</td>
- <td>
-   <select>
-     <option></option>
-     <option>LC</option>
-     <option>NH</option>
-     <option>UG</option>
-     <option>WDAY</option>
-     <option>Vacation</option>
-     <option>Sick</option>
-   </select>
- </td>
- <td><input class="base" placeholder="6:00"></td>
- <td class="num">-</td>
- `;
- tbody.appendChild(tr);
-}
+  const fmt2 = x => (Math.round(x * 100) / 100).toFixed(2);
+  const money = x => (Math.round(x * 100) / 100).toLocaleString(undefined,{style:"currency",currency:"USD"});
+  const pad2 = n => String(n).padStart(2,"0");
+  const keyFor = (y,m) => `${y}-${pad2(m)}`;
+  const labelFor = k => {
+    const [y,m]=k.split("-").map(Number);
+    const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    return `${months[m-1]} ${y}`;
+  };
 
-document.querySelectorAll(".base").forEach(i=>i.addEventListener("input",recalc));
+  function parseHours(input){
+    const s = String(input ?? "").trim();
+    if(!s) return 0;
+    if(s.includes(":")){
+      const [h,m]=s.split(":");
+      const hh=Number(h), mm=Number(m);
+      if(Number.isFinite(hh)&&Number.isFinite(mm)) return hh + (mm/60);
+      return 0;
+    }
+    const v=Number(s);
+    return Number.isFinite(v) ? v : 0;
+  }
+
+  function loadSettings(){
+    try{
+      const raw=localStorage.getItem(settingsKey);
+      if(!raw) return structuredClone(DEFAULTS);
+      const s=JSON.parse(raw)||{};
+      const out=structuredClone(DEFAULTS);
+      Object.assign(out,s);
+      if(typeof out.codes==="string"){
+        const parts=out.codes.split(",").map(x=>x.trim()).filter(x=>x.length>0);
+        if(parts[0]!== "") parts.unshift("");
+        out.codes=parts;
+      }
+      return out;
+    }catch{ return structuredClone(DEFAULTS); }
+  }
+  const saveSettings = s => localStorage.setItem(settingsKey, JSON.stringify({...s, codes:s.codes.join(",")}));
+
+  function initMonths(contractYear){
+    const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    monthSelect.innerHTML = months.map((m,i)=>`<option value="${keyFor(contractYear,i+1)}">${m} ${contractYear}</option>`).join("");
+    return keyFor(contractYear,1);
+  }
+
+  const blankMonth = () => ({
+    shfs:"FS",
+    lineRotation:"No",
+    unionDues: DEFAULTS.unionOnDefault || "No",
+    otherTaxable: 0,
+    rows: Array.from({length:ROWS_PER_MONTH},(_,i)=>({day:i+1, code:"", base:""}))
+  });
+
+  function loadMonth(k){
+    const raw=localStorage.getItem(monthKey(k));
+    if(!raw) return blankMonth();
+    try{
+      const p=JSON.parse(raw)||{};
+      const rows=Array.from({length:ROWS_PER_MONTH},(_,i)=>{
+        const day=i+1;
+        const found=(p.rows||[]).find(r=>r.day===day) || {day,code:"",base:""};
+        return {day, code: found.code ?? "", base: found.base ?? ""};
+      });
+      return {shfs:p.shfs||"FS", lineRotation:p.lineRotation||"No", unionDues:p.unionDues||DEFAULTS.unionOnDefault||"No", otherTaxable:Number(p.otherTaxable||0), rows};
+    }catch{ return blankMonth(); }
+  }
+  const saveMonth = (k,d) => localStorage.setItem(monthKey(k), JSON.stringify(d));
+
+  function lookupFedRate(x){
+    // Match Excel LOOKUP(A2:A300,B2:B300) behavior on the sheet's ROW ORDER (range isn't fully sorted).
+    // Excel returns the LAST threshold <= x encountered while scanning top-to-bottom.
+    let rate = 0;
+    for(const [thr, r] of FED_TABLE){
+      if(x >= thr) rate = r;
+    }
+    return rate;
+  }
+
+
+
+  function isCountDay(code, baseDec){
+    const c=(code||"").trim();
+    if(DEFAULTS.noCountCodes.includes(c)) return false;
+    if(c==="WDAY"||c==="Training"||c==="Stan Meeting") return true;
+    return baseDec>0;
+  }
+
+  function baseHoursFor(code, baseDec, s){
+    const c=(code||"").trim();
+    if(c==="Vacation") return s.vacHrs;
+    if(c==="Sick") return s.sickHrs;
+    if(c==="WDAY"||c==="Training"||c==="Stan Meeting"||c==="WKCXLD") return s.daily;
+    return baseDec>0 ? baseDec : 0;
+  }
+
+  function overrideBlocked(code){
+    const c=(code||"").trim();
+    return DEFAULTS.noOverrideCodes.includes(c);
+  }
+
+  function computeRows(rows, s, md){
+    const isLR = md.lineRotation==="Yes";
+    const ovrPct = isLR ? s.lrOvr : s.ovpct;
+    let count=0;
+    return rows.map(r=>{
+      const baseDec=parseHours(r.base);
+      const code=(r.code||"").trim();
+      const counted = isCountDay(code, baseDec);
+      if(counted) count++;
+
+      const baseHrs=baseHoursFor(code, baseDec, s);
+      const add25 = (count > s.otAfterDay && baseHrs>0 && !DEFAULTS.noCountCodes.includes(code)) ? s.otPremHours : 0;
+
+      const ov = (!overrideBlocked(code) && baseHrs>0) ? baseHrs*ovrPct : 0;
+      const premOT = add25*ovrPct;
+      const total = baseHrs + add25 + ov + premOT;
+      return {...r, baseDec, baseHrs, add25, ov, premOT, total, count: counted ? 1 : 0};
+    });
+  }
+
+  const max0=x=>Math.max(0,x);
+  const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+  const incCap=(rate, cap, ytdNew, period)=> rate*max0(clamp(ytdNew,0,cap)-clamp(ytdNew-period,0,cap));
+  const incAbove=(rate, thresh, ytdNew, period)=> rate*(max0(ytdNew-thresh)-max0((ytdNew-period)-thresh));
+
+  function computeFinance(s, md, totalHours){
+    const advHours=45;
+    const tuHours=max0(totalHours-advHours);
+
+    const wageAdv = s.payRate*advHours;
+    const wageTU  = s.payRate*tuHours + Number(md.otherTaxable||0);
+
+    const prevYTD = Number(s.grossYTDSeed||0);
+    const ytdAfterAdvWage = prevYTD + wageAdv;
+    const ytdAfterTUWage  = ytdAfterAdvWage + wageTU;
+
+    const dc401kAdv = incCap(s.dcPct, s.dcCap, ytdAfterAdvWage, wageAdv);
+    const dcCashAdv = incAbove(s.dcPct, s.dcCap, ytdAfterAdvWage, wageAdv);
+    const dc401kTU  = incCap(s.dcPct, s.dcCap, ytdAfterTUWage, wageTU);
+    const dcCashTU  = incAbove(s.dcPct, s.dcCap, ytdAfterTUWage, wageTU);
+
+    const grossAdv = wageAdv + dcCashAdv;
+    const grossTU  = wageTU  + dcCashTU;
+
+    const ytdAfterAdvGross = prevYTD + grossAdv;
+    const ytdAfterTUGross  = ytdAfterAdvGross + grossTU;
+
+    const fedAdv = grossAdv * lookupFedRate(grossAdv);
+    const fedTU  = grossTU  * lookupFedRate(grossTU);
+
+    const medAdv = grossAdv * s.medRate;
+    const medTU  = grossTU  * s.medRate;
+
+    const addMedAdv = incAbove(s.addMedRate, s.addMedThresh, ytdAfterAdvGross, grossAdv);
+    const addMedTU  = incAbove(s.addMedRate, s.addMedThresh, ytdAfterTUGross, grossTU);
+
+    const ssAdv = incCap(s.ssRate, s.ssWageBase, ytdAfterAdvGross, grossAdv);
+    const ssTU  = incCap(s.ssRate, s.ssWageBase, ytdAfterTUGross, grossTU);
+
+    const unionAdv = (md.unionDues==="Yes") ? grossAdv*s.unionPct : 0;
+    const unionTU  = (md.unionDues==="Yes") ? grossTU*s.unionPct : 0;
+
+    const preAdv = s.preTaxPP, preTU = s.preTaxPP;
+    const afterEach = Number(s.afterTaxPP||0) + Number(s.afterTaxExtra||0);
+    const afterAdv = afterEach, afterTU = afterEach;
+
+    const netAdv = grossAdv - fedAdv - medAdv - addMedAdv - ssAdv - unionAdv - preAdv - afterAdv;
+    const netTU  = grossTU  - fedTU  - medTU  - addMedTU  - ssTU  - unionTU  - preTU  - afterTU;
+
+    const month = {gross:grossAdv+grossTU,fed:fedAdv+fedTU,med:medAdv+medTU,addMed:addMedAdv+addMedTU,ss:ssAdv+ssTU,union:unionAdv+unionTU,pre:preAdv+preTU,after:afterAdv+afterTU,dc401k:dc401kAdv+dc401kTU,dcCash:dcCashAdv+dcCashTU,net:netAdv+netTU};
+    const ytd = {gross: prevYTD + month.gross, net: Number(s.netYTDSeed||0) + month.net};
+    return {adv:{gross:grossAdv,fed:fedAdv,med:medAdv,addMed:addMedAdv,ss:ssAdv,union:unionAdv,pre:preAdv,after:afterAdv,dc401k:dc401kAdv,dcCash:dcCashAdv,net:netAdv},
+            tu:{gross:grossTU,fed:fedTU,med:medTU,addMed:addMedTU,ss:ssTU,union:unionTU,pre:preTU,after:afterTU,dc401k:dc401kTU,dcCash:dcCashTU,net:netTU},
+            month,ytd,prev:{gross:prevYTD,net:Number(s.netYTDSeed||0)}};
+  }
+
+  function renderFinance(s, md, totalHours){
+    const f=computeFinance(s, md, totalHours);
+    $("netAdvMini").textContent = money(f.adv.net);
+    $("netTrueMini").textContent = money(f.tu.net);
+
+    const row=(label,a,t,m,y,p,isNet=false)=>`
+      <div class="finGrid ${isNet?'finNet':''}">
+        <div class="finCell finLabel">${label}</div>
+        <div class="finCell num">${money(a)}</div>
+        <div class="finCell num">${money(t)}</div>
+        <div class="finCell num">${money(m)}</div>
+        <div class="finCell num">${money(y)}</div>
+        <div class="finCell num">${money(p)}</div>
+      </div>`;
+
+    financeRowsEl.innerHTML =
+      row("Gross", f.adv.gross, f.tu.gross, f.month.gross, f.ytd.gross, f.prev.gross) +
+      row("Fed", f.adv.fed, f.tu.fed, f.month.fed, 0, 0) +
+      row("Medicare", f.adv.med, f.tu.med, f.month.med, 0, 0) +
+      row("Add Medicare", f.adv.addMed, f.tu.addMed, f.month.addMed, 0, 0) +
+      row("Social Sec.", f.adv.ss, f.tu.ss, f.month.ss, 0, 0) +
+      row("Union Dues", f.adv.union, f.tu.union, f.month.union, 0, 0) +
+      row("Pre-Tax Deduc.", f.adv.pre, f.tu.pre, f.month.pre, 0, 0) +
+      row("After-Tax Deduc.", f.adv.after, f.tu.after, f.month.after, 0, 0) +
+      row("DC to 401k", f.adv.dc401k, f.tu.dc401k, f.month.dc401k, 0, 0) +
+      row("DC Cash", f.adv.dcCash, f.tu.dcCash, f.month.dcCash, 0, 0) +
+      row("NET", f.adv.net, f.tu.net, f.month.net, f.ytd.net, f.prev.net, true);
+  }
+
+  const optionsHTML = (codes, sel) => codes.map(c=>{
+    const safe=String(c).replace(/"/g,'&quot;');
+    return `<option value="${safe}"${c===sel?" selected":""}>${safe}</option>`;
+  }).join("");
+
+  function render(){
+    const s=loadSettings();
+    $("contractYear").value=s.contractYear;
+    $("payRate").value=s.payRate;
+    $("daily").value=s.daily;
+    $("regHours").value=s.regularPayHours;
+    $("ovpct").value=s.ovpct;
+    $("lrovr").value=s.lrOvr;
+    $("otAfter").value=s.otAfterDay;
+    $("otPrem").value=s.otPremHours;
+    $("vacHrs").value=s.vacHrs;
+    $("sickHrs").value=s.sickHrs;
+    $("dcPct").value=s.dcPct;
+    $("dcCap").value=s.dcCap;
+    $("unionPct").value=s.unionPct;
+    $("preTaxPP").value=s.preTaxPP;
+    $("afterTaxPP").value=s.afterTaxPP;
+    $("afterTaxExtra").value=s.afterTaxExtra;
+    $("medRate").value=s.medRate;
+    $("addMedRate").value=s.addMedRate;
+    $("addMedThresh").value=s.addMedThresh;
+    $("ssRate").value=s.ssRate;
+    $("ssWageBase").value=s.ssWageBase;
+    $("grossSeed").value=s.grossYTDSeed;
+    $("netSeed").value=s.netYTDSeed;
+    $("codeList").value=s.codes.join(",");
+
+    const key=monthSelect.value;
+    $("monthTitle").textContent=labelFor(key);
+
+    const md=loadMonth(key);
+    shfsSelect.value=md.shfs;
+    lrSelect.value=md.lineRotation;
+    udSelect.value=md.unionDues;
+    otherTaxableInp.value = Number(md.otherTaxable||0).toFixed(2);
+
+    const computed=computeRows(md.rows, s, md);
+    rowsEl.innerHTML = computed.map((r,idx)=>`
+      <div class="grid row">
+        <div class="cell"><span class="datePill">${r.day}</span></div>
+        <div class="cell"><select class="codeSel" data-idx="${idx}">${optionsHTML(s.codes,r.code)}</select></div>
+        <div class="cell num">${r.count}</div>
+        <div class="cell"><input class="baseInp" type="text" inputmode="text" data-idx="${idx}" value="${String(r.base).replace(/"/g,'&quot;')}" placeholder="hh:mm"></div>
+        <div class="cell num">${fmt2(r.baseDec)}</div>
+        <div class="cell num">${fmt2(r.add25)}</div>
+        <div class="cell num">${fmt2(r.ov)}</div>
+        <div class="cell num">${fmt2(r.total)}</div>
+      </div>
+    `).join("");
+
+    rowsEl.querySelectorAll("select.codeSel").forEach(sel=>{
+      sel.addEventListener("change",(e)=>{
+        const i=Number(e.target.getAttribute("data-idx"));
+        const d=loadMonth(monthSelect.value);
+        d.rows[i].code=e.target.value;
+        saveMonth(monthSelect.value,d);
+        render();
+      });
+    });
+
+    rowsEl.querySelectorAll("input.baseInp").forEach(inp=>{
+      inp.addEventListener("blur",(e)=>{
+        const i=Number(e.target.getAttribute("data-idx"));
+        const d=loadMonth(monthSelect.value);
+        d.rows[i].base=e.target.value;
+        saveMonth(monthSelect.value,d);
+        render();
+      });
+      inp.addEventListener("keydown",(e)=>{
+        if(e.key==="Enter") e.target.blur();
+      });
+    });
+
+    const totDays = computed.reduce((a,r)=>a+r.count,0);
+    const totBase = computed.reduce((a,r)=>a+r.baseHrs,0);
+    const totOT   = computed.reduce((a,r)=>a+r.add25,0);
+    const totOV   = computed.reduce((a,r)=>a+r.ov,0);
+    const totPremOT = computed.reduce((a,r)=>a+r.premOT,0);
+    const totTotal= computed.reduce((a,r)=>a+r.total,0);
+
+    $("totDays").textContent=String(totDays);
+    $("totBase").textContent=fmt2(totBase);
+    $("totOT").textContent=fmt2(totOT);
+    $("totOV").textContent=fmt2(totOV);
+    $("totTotal").textContent=fmt2(totTotal);
+
+    $("sumRegular").textContent=fmt2(s.regularPayHours);
+    $("sumDayAdj").textContent=fmt2(totBase - s.regularPayHours);
+    $("sumAddl").textContent=fmt2(totOT);
+    $("sumOverride").textContent=fmt2(totOV);
+    $("sumPremOT").textContent=fmt2(totPremOT);
+    $("sumGrand").textContent=fmt2(totTotal);
+
+    renderFinance(s, md, totTotal);
+  }
+
+  function bindSetting(id, key, cast){
+    $(id).addEventListener("change",()=>{
+      const s=loadSettings();
+      s[key]=cast($(id).value);
+      saveSettings(s);
+      if(key==="contractYear"){
+        initMonths(s.contractYear);
+        monthSelect.value=keyFor(s.contractYear,1);
+      }
+      render();
+    });
+  }
+
+  function doBackup(){
+    const s=loadSettings();
+    const months=[];
+    for(let m=1;m<=12;m++){
+      const k=keyFor(s.contractYear,m);
+      months.push({key:k, data: loadMonth(k)});
+    }
+    const payload={app:"CKP_Pay_Hours",version:"final",exportedAt:new Date().toISOString(),settings:s,months};
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download=`CKP_Pay_Hours_Backup_${s.contractYear}.json`;
+    a.click();
+  }
+
+  function doRestore(text){
+    const payload=JSON.parse(text);
+    if(!payload || payload.app!=="CKP_Pay_Hours") throw new Error("Not a CKP Pay Hours backup.");
+    if(payload.settings) saveSettings(payload.settings);
+    if(Array.isArray(payload.months)){
+      payload.months.forEach(item=>{
+        if(item && item.key && item.data){
+          localStorage.setItem(monthKey(item.key), JSON.stringify(item.data));
+        }
+      });
+    }
+    const s=loadSettings();
+    initMonths(s.contractYear);
+    monthSelect.value=keyFor(s.contractYear,1);
+    render();
+    alert("Restore complete ✅");
+  }
+
+  function exportCSV(){
+    const s=loadSettings();
+    const k=monthSelect.value;
+    const md=loadMonth(k);
+    const computed=computeRows(md.rows,s,md);
+    let csv="Month,Day,Code,Base_hhmm,Base_dec,CountDay,BaseHours,Add2_5,Override,PremOnOT,TotalHours\n";
+    computed.forEach(r=>{
+      csv += [
+        labelFor(k), r.day,
+        `"${String(r.code||"").replace(/"/g,'""')}"`,
+        `"${String(r.base||"").replace(/"/g,'""')}"`,
+        fmt2(r.baseDec),
+        r.count,
+        fmt2(r.baseHrs),
+        fmt2(r.add25),
+        fmt2(r.ov),
+        fmt2(r.premOT),
+        fmt2(r.total)
+      ].join(",") + "\n";
+    });
+    const blob=new Blob([csv],{type:"text/csv"});
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download=`CKP_Pay_Hours_${k}.csv`;
+    a.click();
+  }
+
+  // INIT
+  const s0=loadSettings();
+  initMonths(s0.contractYear);
+  monthSelect.value=keyFor(s0.contractYear,1);
+  monthSelect.addEventListener("change",render);
+
+  $("resetBtn").addEventListener("click",()=>{
+    localStorage.removeItem(monthKey(monthSelect.value));
+    render();
+  });
+
+  $("backupBtn").addEventListener("click", doBackup);
+  $("restoreBtn").addEventListener("click", ()=> $("restoreFile").click());
+  $("restoreFile").addEventListener("change", async (e)=>{
+    const f=e.target.files && e.target.files[0];
+    if(!f) return;
+    try{ doRestore(await f.text()); }
+    catch(err){ alert("Restore failed: " + (err?.message||String(err))); }
+    finally{ e.target.value=""; }
+  });
+
+  $("exportBtn").addEventListener("click", exportCSV);
+
+  shfsSelect.addEventListener("change",()=>{const d=loadMonth(monthSelect.value); d.shfs=shfsSelect.value; saveMonth(monthSelect.value,d);});
+  lrSelect.addEventListener("change",()=>{const d=loadMonth(monthSelect.value); d.lineRotation=lrSelect.value; saveMonth(monthSelect.value,d); render();});
+  udSelect.addEventListener("change",()=>{const d=loadMonth(monthSelect.value); d.unionDues=udSelect.value; saveMonth(monthSelect.value,d); render();});
+  otherTaxableInp.addEventListener("change",()=>{const d=loadMonth(monthSelect.value); d.otherTaxable=Number(otherTaxableInp.value||0); saveMonth(monthSelect.value,d); render();});
+
+  bindSetting("contractYear","contractYear",v=>parseInt(v,10)||DEFAULTS.contractYear);
+  bindSetting("payRate","payRate",v=>Number(v)||DEFAULTS.payRate);
+  bindSetting("daily","daily",v=>Number(v)||DEFAULTS.daily);
+  bindSetting("ovpct","ovpct",v=>Number(v)||DEFAULTS.ovpct);
+  bindSetting("lrovr","lrOvr",v=>Number(v)||DEFAULTS.lrOvr);
+  bindSetting("otAfter","otAfterDay",v=>parseInt(v,10)||DEFAULTS.otAfterDay);
+  bindSetting("otPrem","otPremHours",v=>Number(v)||DEFAULTS.otPremHours);
+  bindSetting("vacHrs","vacHrs",v=>Number(v)||DEFAULTS.vacHrs);
+  bindSetting("sickHrs","sickHrs",v=>Number(v)||DEFAULTS.sickHrs);
+  bindSetting("dcPct","dcPct",v=>Number(v)||DEFAULTS.dcPct);
+  bindSetting("dcCap","dcCap",v=>Number(v)||DEFAULTS.dcCap);
+  bindSetting("unionPct","unionPct",v=>Number(v)||DEFAULTS.unionPct);
+  bindSetting("preTaxPP","preTaxPP",v=>Number(v)||DEFAULTS.preTaxPP);
+  bindSetting("afterTaxPP","afterTaxPP",v=>Number(v)||DEFAULTS.afterTaxPP);
+  bindSetting("afterTaxExtra","afterTaxExtra",v=>Number(v)||DEFAULTS.afterTaxExtra);
+  bindSetting("medRate","medRate",v=>Number(v)||DEFAULTS.medRate);
+  bindSetting("addMedRate","addMedRate",v=>Number(v)||DEFAULTS.addMedRate);
+  bindSetting("addMedThresh","addMedThresh",v=>Number(v)||DEFAULTS.addMedThresh);
+  bindSetting("ssRate","ssRate",v=>Number(v)||DEFAULTS.ssRate);
+  bindSetting("ssWageBase","ssWageBase",v=>Number(v)||DEFAULTS.ssWageBase);
+  bindSetting("grossSeed","grossYTDSeed",v=>Number(v)||DEFAULTS.grossYTDSeed);
+  bindSetting("netSeed","netYTDSeed",v=>Number(v)||DEFAULTS.netYTDSeed);
+
+  $("codeList").addEventListener("change",()=>{
+    const s=loadSettings();
+    const parts=$("codeList").value.split(",").map(x=>x.trim()).filter(Boolean);
+    if(parts[0]!== "") parts.unshift("");
+    s.codes=parts;
+    saveSettings(s);
+    render();
+  });
+
+  render();
+})();
 </script>
-
 </body>
 </html>
