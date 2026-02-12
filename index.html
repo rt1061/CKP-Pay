@@ -1,1 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CKP Pay Hours</title>
 
+<!-- Load Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Load Federal Table (separate file) -->
+<script src="fed_table.js"></script>
+
+<style>
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  background:#0f1115;
+  color:#e8ecf1;
+  margin:0;
+  padding:24px;
+}
+.card{
+  max-width:720px;
+  background:#131722;
+  border:1px solid #273042;
+  border-radius:16px;
+  padding:20px;
+}
+input,button{
+  padding:10px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.05);
+  color:white;
+  margin-top:8px;
+}
+button{
+  cursor:pointer;
+}
+button:hover{
+  background:rgba(255,255,255,.15);
+}
+.msg{
+  margin-top:14px;
+}
+.ok{color:#7CFC98;}
+.bad{color:#ff8a8a;}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h2>CKP Cloud Sync Test</h2>
+
+  <label>Month Key</label>
+  <input id="monthKey" value="2026-01"/>
+
+  <label>Test Value</label>
+  <input id="testValue" placeholder="Type something"/>
+
+  <div style="margin-top:12px;">
+    <button onclick="saveData()">Save to Supabase</button>
+    <button onclick="loadData()">Load from Supabase</button>
+  </div>
+
+  <div id="msg" class="msg"></div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://ephkcxaggqspklvywxpl.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_I86rCHvEzTwfScSzZ4hV7Q_J6oJbC64";
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const DEVICE_ID_KEY = "ckp_device_id";
+let DEVICE_ID = localStorage.getItem(DEVICE_ID_KEY);
+
+if(!DEVICE_ID){
+  DEVICE_ID = crypto.randomUUID();
+  localStorage.setItem(DEVICE_ID_KEY, DEVICE_ID);
+}
+
+const msgEl = document.getElementById("msg");
+
+function showMsg(text, ok=true){
+  msgEl.className = ok ? "msg ok" : "msg bad";
+  msgEl.textContent = text;
+}
+
+async function saveData(){
+  const month_key = document.getElementById("monthKey").value;
+  const value = document.getElementById("testValue").value;
+
+  const { error } = await supabase
+    .from("ckp_months")
+    .upsert({
+      user_id: DEVICE_ID,
+      month_key,
+      payload: { value }
+    }, { onConflict: "user_id,month_key" });
+
+  if(error){
+    showMsg("Save failed: " + error.message, false);
+  } else {
+    showMsg("Saved to cloud ✔");
+  }
+}
+
+async function loadData(){
+  const month_key = document.getElementById("monthKey").value;
+
+  const { data, error } = await supabase
+    .from("ckp_months")
+    .select("payload")
+    .eq("user_id", DEVICE_ID)
+    .eq("month_key", month_key)
+    .maybeSingle();
+
+  if(error){
+    showMsg("Load failed: " + error.message, false);
+    return;
+  }
+
+  if(!data){
+    showMsg("Nothing found in cloud", false);
+    return;
+  }
+
+  document.getElementById("testValue").value = data.payload?.value || "";
+  showMsg("Loaded from cloud ✔");
+}
+</script>
+
+</body>
+</html>
