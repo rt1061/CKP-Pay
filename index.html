@@ -3,13 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>CKP Pay Hours</title>
-
-<!-- Load Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<!-- Load Federal Table (separate file) -->
-<script src="fed_table.js"></script>
+<title>CKP Cloud Sync Test</title>
 
 <style>
 body{
@@ -17,35 +11,38 @@ body{
   background:#0f1115;
   color:#e8ecf1;
   margin:0;
-  padding:24px;
+  padding:40px;
 }
 .card{
-  max-width:720px;
+  max-width:600px;
   background:#131722;
   border:1px solid #273042;
   border-radius:16px;
-  padding:20px;
+  padding:24px;
 }
-input,button{
+input{
+  width:100%;
+  margin:8px 0 16px 0;
   padding:10px;
   border-radius:10px;
-  border:1px solid rgba(255,255,255,.2);
-  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.06);
   color:white;
-  margin-top:8px;
 }
 button{
+  padding:10px 14px;
+  border-radius:12px;
+  border:none;
+  background:rgba(255,255,255,.15);
+  color:white;
   cursor:pointer;
+  margin-right:8px;
 }
 button:hover{
-  background:rgba(255,255,255,.15);
+  background:rgba(255,255,255,.25);
 }
-.msg{
-  margin-top:14px;
-}
-.ok{color:#7CFC98;}
-.bad{color:#ff8a8a;}
 </style>
+
 </head>
 <body>
 
@@ -53,82 +50,83 @@ button:hover{
   <h2>CKP Cloud Sync Test</h2>
 
   <label>Month Key</label>
-  <input id="monthKey" value="2026-01"/>
+  <input id="monthKey" value="2026-01">
 
   <label>Test Value</label>
-  <input id="testValue" placeholder="Type something"/>
+  <input id="testValue" placeholder="Type something">
 
-  <div style="margin-top:12px;">
-    <button onclick="saveData()">Save to Supabase</button>
-    <button onclick="loadData()">Load from Supabase</button>
-  </div>
-
-  <div id="msg" class="msg"></div>
+  <button onclick="saveData()">Save to Supabase</button>
+  <button onclick="loadData()">Load from Supabase</button>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
+
+// ===== SUPABASE CONFIG =====
 const SUPABASE_URL = "https://ephkcxaggqspklvywxpl.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_I86rCHvEzTwfScSzZ4hV7Q_J6oJbC64";
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const DEVICE_ID_KEY = "ckp_device_id";
-let DEVICE_ID = localStorage.getItem(DEVICE_ID_KEY);
+// unique device ID stored locally
+const DEVICE_KEY = "ckp-device-id";
+let DEVICE_ID = localStorage.getItem(DEVICE_KEY);
 
 if(!DEVICE_ID){
   DEVICE_ID = crypto.randomUUID();
-  localStorage.setItem(DEVICE_ID_KEY, DEVICE_ID);
+  localStorage.setItem(DEVICE_KEY, DEVICE_ID);
 }
 
-const msgEl = document.getElementById("msg");
+// ===== SAVE FUNCTION =====
+async function saveData() {
 
-function showMsg(text, ok=true){
-  msgEl.className = ok ? "msg ok" : "msg bad";
-  msgEl.textContent = text;
-}
-
-async function saveData(){
-  const month_key = document.getElementById("monthKey").value;
+  const month = document.getElementById("monthKey").value;
   const value = document.getElementById("testValue").value;
 
   const { error } = await supabase
     .from("ckp_months")
-    .upsert({
-      user_id: DEVICE_ID,
-      month_key,
-      payload: { value }
-    }, { onConflict: "user_id,month_key" });
+    .upsert(
+      {
+        user_id: DEVICE_ID,
+        month_key: month,
+        payload: { test: value }
+      },
+      { onConflict: "user_id,month_key" }
+    );
 
   if(error){
-    showMsg("Save failed: " + error.message, false);
+    alert("Error: " + error.message);
   } else {
-    showMsg("Saved to cloud ✔");
+    alert("Saved to cloud ✔");
   }
 }
 
-async function loadData(){
-  const month_key = document.getElementById("monthKey").value;
+// ===== LOAD FUNCTION =====
+async function loadData() {
+
+  const month = document.getElementById("monthKey").value;
 
   const { data, error } = await supabase
     .from("ckp_months")
     .select("payload")
     .eq("user_id", DEVICE_ID)
-    .eq("month_key", month_key)
+    .eq("month_key", month)
     .maybeSingle();
 
   if(error){
-    showMsg("Load failed: " + error.message, false);
+    alert("Error: " + error.message);
     return;
   }
 
-  if(!data){
-    showMsg("Nothing found in cloud", false);
-    return;
+  if(data && data.payload){
+    document.getElementById("testValue").value = data.payload.test || "";
+    alert("Loaded from cloud ✔");
+  } else {
+    alert("Nothing saved yet.");
   }
-
-  document.getElementById("testValue").value = data.payload?.value || "";
-  showMsg("Loaded from cloud ✔");
 }
+
 </script>
 
 </body>
