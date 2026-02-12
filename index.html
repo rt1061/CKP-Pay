@@ -315,19 +315,10 @@ button.ok:hover{background:rgba(106,168,255,.32)}
       const remote = data.payload || {};
       const local = loadMonth(monthKey);
 
-      const remoteTs = Number(remote._cloudTs || 0);
-      const localTs = Number(local._localTs || 0);
-
-      // Only overwrite local if cloud is newer
-      if (remoteTs && remoteTs >= localTs) {
-        saveMonthLocalOnly(monthKey, remote);
-        setCloudTag("Cloud: pulled ✅");
-        return true;
-      } else {
-        setCloudTag("Cloud: local newer");
-        alert("Your local copy is newer than the cloud for " + monthKey + ".\nUse Cloud Push if you want to overwrite the cloud.");
-        return false;
-      }
+  saveMonthLocalOnly(monthKey, remote);
+setCloudTag("Cloud: pulled ✅");
+return true;
+      
     } catch (e) {
       console.error(e);
       setCloudTag("Cloud: error ❌");
