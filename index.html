@@ -43,11 +43,30 @@ button.ghost{background:rgba(255,255,255,.08)}button.ghost:hover{background:rgba
 .header{background:rgba(255,255,255,.06);font-size:12px;font-weight:900;position:sticky;top:0;z-index:10}
 .header>div,.footer>div{padding:12px 10px;border-right:1px solid rgba(255,255,255,.06)}
 .header>div:last-child,.footer>div:last-child{border-right:none}
-.row{border-top:1px solid rgba(255,255,255,.06)}
-.cell{padding:10px;border-right:1px solid rgba(255,255,255,.06)}
+.row{
+  border-top:1px solid rgba(255,255,255,.06);
+  background:rgba(0,0,0,.22); /* darker, barely green overall */
+}
+.cell{
+  padding:10px;
+  border-right:1px solid rgba(255,255,255,.06);
+  background:rgba(0,0,0,.18);
+}
 .cell:last-child{border-right:none}
 .datePill{display:inline-flex;align-items:center;justify-content:center;width:34px;height:24px;border:2px solid var(--accent);border-radius:6px;font-weight:900;background:rgba(106,168,255,.06)}
-select.codeSel,input.baseInp{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--text);padding:8px;border-radius:10px;outline:none}
+select.codeSel,input.baseInp{
+  width:100%;
+  background:rgba(47,212,122,.10);         /* green field */
+  border:1px solid rgba(47,212,122,.45);   /* green border */
+  color:var(--text);
+  padding:8px;
+  border-radius:10px;
+  outline:none;
+}
+select.codeSel:focus,input.baseInp:focus{
+  border-color:rgba(47,212,122,.85);
+  background:rgba(47,212,122,.14);
+}
 input.baseInp{text-align:right;font-variant-numeric:tabular-nums}
 .num{
   text-align:right;
