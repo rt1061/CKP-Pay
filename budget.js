@@ -284,3 +284,44 @@ export function setBudgetFromCloud(budgetObj) {
   if (!budgetObj) return;
   saveBudget(budgetObj);
 }
+// ==============================
+// Auto-wire the CKP/Budget tabs
+// ==============================
+function wireBudgetTabs() {
+  const tabCkp = document.getElementById("tabCkp");
+  const tabBudget = document.getElementById("tabBudget");
+
+  const ckpTopbar = document.querySelector("header.topbar");
+  const ckpMain = document.querySelector("main.layout");
+  const budgetRoot = document.getElementById("budgetRoot");
+
+  if (!tabCkp || !tabBudget || !budgetRoot || !ckpTopbar || !ckpMain) return;
+
+  function setActive(which) {
+    tabCkp.classList.toggle("active", which === "ckp");
+    tabBudget.classList.toggle("active", which === "budget");
+  }
+
+  tabBudget.addEventListener("click", () => {
+    ckpTopbar.style.display = "none";
+    ckpMain.style.display = "none";
+    budgetRoot.style.display = "block";
+    setActive("budget");
+
+    // Render budget UI
+    mountBudgetTab(budgetRoot);
+  });
+
+  tabCkp.addEventListener("click", () => {
+    budgetRoot.style.display = "none";
+    ckpTopbar.style.display = "";
+    ckpMain.style.display = "";
+    setActive("ckp");
+  });
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", wireBudgetTabs);
+} else {
+  wireBudgetTabs();
+}
