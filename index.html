@@ -310,6 +310,13 @@ button.ok:hover{background:rgba(106,168,255,.32)}
 </style>
 </head>
 <body>
+
+<div class="tabBar">
+  <button id="tabCkp" class="tabBtn active">CKP Pay</button>
+  <button id="tabBudget" class="tabBtn">Budget</button>
+</div>
+
+<!-- everything else that was already there stays below -->
 <header class="topbar">
   <div class="brand">CKP Pay Hours</div>
   <div class="actions">
@@ -1028,5 +1035,6 @@ const add25 = (!isLR && count > s.otAfterDay && baseHrs > 0 && !DEFAULTS.noCount
   render();
 })();
 </script>
+  <script src="budget.js"></script>
 </body>
 </html>
