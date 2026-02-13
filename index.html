@@ -607,7 +607,10 @@ function saveMonthLocalOnly(k, d) {
       if(counted) count++;
 
       const baseHrs=baseHoursFor(code, baseDec, s);
-      const add25 = (count > s.otAfterDay && baseHrs>0 && !DEFAULTS.noCountCodes.includes(code)) ? s.otPremHours : 0;
+      // OT premium (+2.5) does NOT apply during Line Rotation months
+const add25 = (!isLR && count > s.otAfterDay && baseHrs > 0 && !DEFAULTS.noCountCodes.includes(code))
+  ? s.otPremHours
+  : 0;
 
       const ov = (!overrideBlocked(code) && baseHrs>0) ? baseHrs*ovrPct : 0;
       const premOT = add25*ovrPct;
