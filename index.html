@@ -414,10 +414,14 @@ const DEVICE_ID = "b08dfd93-c752-4ca6-bc1a-87792f114b53";
     try {
       setCloudTag("Cloud: pushing…");
 
-      const payload = loadMonth(monthKey);
-      payload._cloudTs = Date.now();           // our own "last modified" timestamp
-      payload._localTs = payload._cloudTs;     // keep local in sync with cloud ts
-      saveMonthLocalOnly(monthKey, payload);   // make sure local has the same _cloudTs
+      const payload = {
+  month: loadMonth(monthKey),
+  settings: loadSettings(),
+  _cloudTs: Date.now()
+};
+
+payload._localTs = payload._cloudTs;
+saveMonthLocalOnly(monthKey, payload.month);
 
       const { error } = await sb
         .from("ckp_months")
@@ -457,9 +461,15 @@ const DEVICE_ID = "b08dfd93-c752-4ca6-bc1a-87792f114b53";
       }
 
       const remote = data.payload || {};
-      const local = loadMonth(monthKey);
 
-  saveMonthLocalOnly(monthKey, remote);
+if (remote.settings) {
+  saveSettings(remote.settings);
+}
+
+if (remote.month) {
+  saveMonthLocalOnly(monthKey, remote.month);
+}
+
 setCloudTag("Cloud: pulled ✅");
 return true;
       
