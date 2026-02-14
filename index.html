@@ -891,7 +891,7 @@ const add25 = (!isLR && count > s.otAfterDay && baseHrs > 0 && !DEFAULTS.noCount
     // ---- Budget integration (Extra Available) ----
 const bt = (window.CKPBUDGET && typeof window.CKPBUDGET.getTotals === "function")
   ? window.CKPBUDGET.getTotals()
-  : { total1: 0, total15: 0 };
+  : { total1: 0, total15: 0, grand: 0 };
 
 const advNet = f.adv.net;
 const trueNet = f.tu.net;
