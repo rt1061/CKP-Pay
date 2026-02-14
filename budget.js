@@ -10,6 +10,17 @@
 // If you already have a "cloud payload" save/load in CKP Pay, you can merge this object into that payload.
 
 const BUDGET_STORAGE_KEY = "CKP_BUDGET_V1";
+// Expose totals to CKP Pay (so the CKP tab can show Extra Available)
+function getBudgetTotals() {
+  const data = loadBudget();
+  const total1 = sumActive(data.lists.first);
+  const total15 = sumActive(data.lists.fifteenth);
+  return { total1, total15, grand: total1 + total15 };
+}
+
+// Make it available globally
+window.CKPBUDGET = window.CKPBUDGET || {};
+window.CKPBUDGET.getTotals = getBudgetTotals;
 
 function parsePostDay(v) {
   if (v == null) return null;
