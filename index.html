@@ -938,101 +938,112 @@ setTxt("xExtra15", extra15);
     return `<option value="${safe}"${c===sel?" selected":""}>${safe}</option>`;
   }).join("");
 
-  function render(){
-    const s=loadSettings();
-    $("contractYear").value=s.contractYear;
-    $("payRate").value=s.payRate;
-    $("daily").value=s.daily;
-    $("regHours").value=s.regularPayHours;
-    $("ovpct").value=s.ovpct;
-    $("lrovr").value=s.lrOvr;
-    $("otAfter").value=s.otAfterDay;
-    $("otPrem").value=s.otPremHours;
-    $("vacHrs").value=s.vacHrs;
-    $("sickHrs").value=s.sickHrs;
-    $("dcPct").value=s.dcPct;
-    $("dcCap").value=s.dcCap;
-    $("unionPct").value=s.unionPct;
-    $("preTaxPP").value=s.preTaxPP;
-    $("afterTaxPP").value=s.afterTaxPP;
-    $("afterTaxExtra").value=s.afterTaxExtra;
-    $("medRate").value=s.medRate;
-    $("addMedRate").value=s.addMedRate;
-    $("addMedThresh").value=s.addMedThresh;
-    $("ssRate").value=s.ssRate;
-    $("ssWageBase").value=s.ssWageBase;
-    $("grossSeed").value=s.grossYTDSeed;
-    $("netSeed").value=s.netYTDSeed;
-    $("codeList").value=s.codes.join(",");
+function render(){
+  const s=loadSettings();
 
-    const key=monthSelect.value;
-    $("monthTitle").textContent=labelFor(key);
+  $("contractYear").value=s.contractYear;
+  $("payRate").value=s.payRate;
+  $("daily").value=s.daily;
+  $("regHours").value=s.regularPayHours;
+  $("ovpct").value=s.ovpct;
+  $("lrovr").value=s.lrOvr;
+  $("otAfter").value=s.otAfterDay;
+  $("otPrem").value=s.otPremHours;
+  $("vacHrs").value=s.vacHrs;
+  $("sickHrs").value=s.sickHrs;
+  $("dcPct").value=s.dcPct;
+  $("dcCap").value=s.dcCap;
+  $("unionPct").value=s.unionPct;
+  $("preTaxPP").value=s.preTaxPP;
+  $("afterTaxPP").value=s.afterTaxPP;
+  $("afterTaxExtra").value=s.afterTaxExtra;
+  $("medRate").value=s.medRate;
+  $("addMedRate").value=s.addMedRate;
+  $("addMedThresh").value=s.addMedThresh;
+  $("ssRate").value=s.ssRate;
+  $("ssWageBase").value=s.ssWageBase;
+  $("grossSeed").value=s.grossYTDSeed;
+  $("netSeed").value=s.netYTDSeed;
+  $("codeList").value=s.codes.join(",");
 
-    const md=loadMonth(key);
-    shfsSelect.value=md.shfs;
-    lrSelect.value=md.lineRotation;
-    udSelect.value=md.unionDues;
-    otherTaxableInp.value = Number(md.otherTaxable||0).toFixed(2);
+  const key=monthSelect.value;
+  $("monthTitle").textContent=labelFor(key);
 
-    const computed=computeRows(md.rows, s, md);
-    rowsEl.innerHTML = computed.map((r,idx)=>`
-      <div class="grid row">
-        <div class="cell"><span class="datePill">${r.day}</span></div>
-        <div class="cell"><select class="codeSel" data-idx="${idx}">${optionsHTML(s.codes,r.code)}</select></div>
-        <div class="cell num">${r.count}</div>
-        <div class="cell"><input class="baseInp" type="text" inputmode="text" data-idx="${idx}" value="${String(r.base).replace(/"/g,'&quot;')}" placeholder="hh:mm"></div>
-        <div class="cell num">${fmt2(r.baseDec)}</div>
-        <div class="cell num">${fmt2(r.add25)}</div>
-        <div class="cell num">${fmt2(r.ov)}</div>
-        <div class="cell num">${fmt2(r.total)}</div>
+  const md=loadMonth(key);
+  shfsSelect.value=md.shfs;
+  lrSelect.value=md.lineRotation;
+  udSelect.value=md.unionDues;
+  otherTaxableInp.value = Number(md.otherTaxable||0).toFixed(2);
+
+  const computed=computeRows(md.rows, s, md);
+
+  rowsEl.innerHTML = computed.map((r,idx)=>`
+    <div class="grid row">
+      <div class="cell"><span class="datePill">${r.day}</span></div>
+      <div class="cell">
+        <select class="codeSel" data-idx="${idx}">
+          ${optionsHTML(s.codes,r.code)}
+        </select>
       </div>
-    `).join("");
+      <div class="cell num">${r.count}</div>
+      <div class="cell">
+        <input class="baseInp" type="text" inputmode="text"
+               data-idx="${idx}"
+               value="${String(r.base).replace(/"/g,'&quot;')}"
+               placeholder="hh:mm">
+      </div>
+      <div class="cell num">${fmt2(r.baseDec)}</div>
+      <div class="cell num">${fmt2(r.add25)}</div>
+      <div class="cell num">${fmt2(r.ov)}</div>
+      <div class="cell num">${fmt2(r.total)}</div>
+    </div>
+  `).join("");
 
-    rowsEl.querySelectorAll("select.codeSel").forEach(sel=>{
-      sel.addEventListener("change",(e)=>{
-        const i=Number(e.target.getAttribute("data-idx"));
-        const d=loadMonth(monthSelect.value);
-        d.rows[i].code=e.target.value;
-        saveMonth(monthSelect.value,d);
-        render();
-      });
+  rowsEl.querySelectorAll("select.codeSel").forEach(sel=>{
+    sel.addEventListener("change",(e)=>{
+      const i=Number(e.target.getAttribute("data-idx"));
+      const d=loadMonth(monthSelect.value);
+      d.rows[i].code=e.target.value;
+      saveMonth(monthSelect.value,d);
+      render();
     });
+  });
 
-    rowsEl.querySelectorAll("input.baseInp").forEach(inp=>{
-      inp.addEventListener("blur",(e)=>{
-        const i=Number(e.target.getAttribute("data-idx"));
-        const d=loadMonth(monthSelect.value);
-        d.rows[i].base=e.target.value;
-        saveMonth(monthSelect.value,d);
-        render();
-      });
-      inp.addEventListener("keydown",(e)=>{
-        if(e.key==="Enter") e.target.blur();
-      });
+  rowsEl.querySelectorAll("input.baseInp").forEach(inp=>{
+    inp.addEventListener("blur",(e)=>{
+      const i=Number(e.target.getAttribute("data-idx"));
+      const d=loadMonth(monthSelect.value);
+      d.rows[i].base=e.target.value;
+      saveMonth(monthSelect.value,d);
+      render();
     });
+    inp.addEventListener("keydown",(e)=>{
+      if(e.key==="Enter") e.target.blur();
+    });
+  });
 
-    const totDays = computed.reduce((a,r)=>a+r.count,0);
-    const totBase = computed.reduce((a,r)=>a+r.baseHrs,0);
-    const totOT   = computed.reduce((a,r)=>a+r.add25,0);
-    const totOV   = computed.reduce((a,r)=>a+r.ov,0);
-    const totPremOT = computed.reduce((a,r)=>a+r.premOT,0);
-    const totTotal= computed.reduce((a,r)=>a+r.total,0);
+  const totDays = computed.reduce((a,r)=>a+r.count,0);
+  const totBase = computed.reduce((a,r)=>a+r.baseHrs,0);
+  const totOT   = computed.reduce((a,r)=>a+r.add25,0);
+  const totOV   = computed.reduce((a,r)=>a+r.ov,0);
+  const totPremOT = computed.reduce((a,r)=>a+r.premOT,0);
+  const totTotal= computed.reduce((a,r)=>a+r.total,0);
 
-    $("totDays").textContent=String(totDays);
-    $("totBase").textContent=fmt2(totBase);
-    $("totOT").textContent=fmt2(totOT);
-    $("totOV").textContent=fmt2(totOV);
-    $("totTotal").textContent=fmt2(totTotal);
+  $("totDays").textContent=String(totDays);
+  $("totBase").textContent=fmt2(totBase);
+  $("totOT").textContent=fmt2(totOT);
+  $("totOV").textContent=fmt2(totOV);
+  $("totTotal").textContent=fmt2(totTotal);
 
-    $("sumRegular").textContent=fmt2(s.regularPayHours);
-    $("sumDayAdj").textContent=fmt2(totBase - s.regularPayHours);
-    $("sumAddl").textContent=fmt2(totOT);
-    $("sumOverride").textContent=fmt2(totOV);
-    $("sumPremOT").textContent=fmt2(totPremOT);
-    $("sumGrand").textContent=fmt2(totTotal);
+  $("sumRegular").textContent=fmt2(s.regularPayHours);
+  $("sumDayAdj").textContent=fmt2(totBase - s.regularPayHours);
+  $("sumAddl").textContent=fmt2(totOT);
+  $("sumOverride").textContent=fmt2(totOV);
+  $("sumPremOT").textContent=fmt2(totPremOT);
+  $("sumGrand").textContent=fmt2(totTotal);
 
-    renderFinance(s, md, totTotal);
-  }
+  renderFinance(s, md, totTotal);
+}
 
   function bindSetting(id, key, cast){
     $(id).addEventListener("change",()=>{
@@ -1172,7 +1183,10 @@ setTxt("xExtra15", extra15);
 
   render();
 })();
-</script>
- <script type="module" src="budget.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<script type="module" src="budget.js"></script>
 </body>
 </html>
