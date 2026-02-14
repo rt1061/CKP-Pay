@@ -346,3 +346,25 @@ if (document.readyState === "loading") {
 } else {
   wireBudgetTabs();
 }
+// --- Expose a tiny API so index.html can read Budget totals (for "Extra Available") ---
+function __budgetTotalsFromStorage() {
+  try {
+    const raw = localStorage.getItem("CKP_BUDGET_V1");
+    if (!raw) return { total1: 0, total15: 0 };
+
+    const data = JSON.parse(raw);
+    const sum = (arr) => (arr || [])
+      .filter(x => x && x.active)
+      .reduce((a, x) => a + Number(x.amount || 0), 0);
+
+    const total1 = sum(data?.lists?.first);
+    const total15 = sum(data?.lists?.fifteenth);
+
+    return { total1, total15 };
+  } catch {
+    return { total1: 0, total15: 0 };
+  }
+}
+
+window.CKPBUDGET = window.CKPBUDGET || {};
+window.CKPBUDGET.getTotals = __budgetTotalsFromStorage;
