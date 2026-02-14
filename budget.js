@@ -114,8 +114,18 @@ function renderTable(container, title, listKey, data, onChange) {
   let visible = hideInactive ? items.filter(x => x.active) : items.slice();
 
   if (sortByPost) {
-    visible.sort((a, b) => (parsePostDay(a.post) ?? 999) - (parsePostDay(b.post) ?? 999));
-  }
+  visible.sort((a, b) => {
+    const ap = parsePostDay(a.post);
+    const bp = parsePostDay(b.post);
+
+    // Any row without a valid Post day goes to the bottom
+    if (ap == null && bp == null) return (a.createdAt || 0) - (b.createdAt || 0);
+    if (ap == null) return 1;
+    if (bp == null) return -1;
+
+    return ap - bp;
+  });
+}
 
   const total = sumActive(items);
 
@@ -159,7 +169,7 @@ function renderTable(container, title, listKey, data, onChange) {
 
   // Events
   container.querySelector(`[data-action="add"]`)?.addEventListener("click", () => {
-    const newItem = { id: uid(), active: true, expense: "", to: "", post: "", amount: 0 };
+    const newItem = { id: uid(), active: true, expense: "", to: "", post: "", amount: 0, createdAt: Date.now() };
     data.lists[listKey].push(newItem);
     saveBudget(data);
     onChange();
