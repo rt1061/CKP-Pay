@@ -291,6 +291,7 @@ export function mountBudgetTab(rootEl) {
 
     renderTable(rootEl.querySelector("#budgetFirst"), "Transferred on 1st", "first", data, rerender);
     renderTable(rootEl.querySelector("#budgetFifteenth"), "Transferred on 15th", "fifteenth", data, rerender);
+    window.dispatchEvent(new Event("ckp-budget-updated"));
   }
 
   rerender();
