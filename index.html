@@ -1181,7 +1181,13 @@ function render(){
     render();
   });
 
-  render();
+   render();
+
+  // Re-render once budget.js has had a chance to load and set window.CKPBUDGET
+  window.addEventListener("load", () => {
+    render();
+  });
+
 })();
 
   </script>
