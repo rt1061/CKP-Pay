@@ -1188,6 +1188,11 @@ function render(){
     render();
   });
 
+  // Re-render any time budget.js tells us totals changed
+window.addEventListener("ckp-budget-updated", () => {
+  render();
+});
+
 })();
 
   </script>
