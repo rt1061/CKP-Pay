@@ -1183,10 +1183,7 @@ function render(){
 
    render();
 
-  // Re-render once budget.js has had a chance to load and set window.CKPBUDGET
-  window.addEventListener("load", () => {
-    render();
-  });
+  
 
   // Re-render any time budget.js tells us totals changed
 window.addEventListener("ckp-budget-updated", () => {
