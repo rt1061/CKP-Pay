@@ -21,6 +21,7 @@ function getBudgetTotals() {
 // Make it available globally
 window.CKPBUDGET = window.CKPBUDGET || {};
 window.CKPBUDGET.getTotals = getBudgetTotals;
+window.dispatchEvent(new Event("ckp-budget-updated"));
 
 function parsePostDay(v) {
   if (v == null) return null;
