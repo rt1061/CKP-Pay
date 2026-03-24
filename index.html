@@ -860,7 +860,21 @@ const add25 = (!isLR && count > s.otAfterDay && baseHrs > 0 && !DEFAULTS.noCount
     const wageAdv = s.payRate*advHours;
     const wageTU  = s.payRate*tuHours + Number(md.otherTaxable||0);
 
-    const prevYTD = Number(s.grossYTDSeed||0);
+    let prevYTD = Number(s.grossYTDSeed || 0);
+
+const currentKey = monthSelect.value;
+const [year, monthNum] = currentKey.split("-").map(Number);
+
+// Sum all previous months
+for (let m = 1; m < monthNum; m++) {
+  const mk = keyFor(year, m);
+  const prevMonth = loadMonth(mk);
+  const computedPrev = computeRows(prevMonth.rows, s, prevMonth);
+  const totalPrev = computedPrev.reduce((a, r) => a + r.total, 0);
+
+  const prevFinance = computeFinanceSingleMonth(s, prevMonth, totalPrev);
+  prevYTD += prevFinance.month.gross;
+}
     const ytdAfterAdvWage = prevYTD + wageAdv;
     const ytdAfterTUWage  = ytdAfterAdvWage + wageTU;
 
@@ -905,6 +919,26 @@ const add25 = (!isLR && count > s.otAfterDay && baseHrs > 0 && !DEFAULTS.noCount
   }
 
   function renderFinance(s, md, totalHours){
+    function computeFinanceSingleMonth(s, md, totalHours){
+  const advHours=45;
+  const tuHours=Math.max(0,totalHours-advHours);
+
+  const wageAdv = s.payRate*advHours;
+  const wageTU  = s.payRate*tuHours + Number(md.otherTaxable||0);
+
+  const dc401kAdv = wageAdv * s.dcPct;
+  const dc401kTU  = wageTU  * s.dcPct;
+
+  const grossAdv = wageAdv;
+  const grossTU  = wageTU;
+
+  return {
+    month: {
+      gross: grossAdv + grossTU,
+      net: grossAdv + grossTU // rough, we only need gross for YTD
+    }
+  };
+}
     const f=computeFinance(s, md, totalHours);
     $("netAdvMini").textContent = money(f.adv.net);
     $("netTrueMini").textContent = money(f.tu.net);
