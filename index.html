@@ -1164,20 +1164,14 @@ function render(){
     const i = Number(e.target.getAttribute("data-idx"));
     const d = loadMonth(monthSelect.value);
     const selectedCode = String(e.target.value || "").trim();
+
     d.rows[i].code = selectedCode;
+    d.rows[i].base = "6:00";
 
-    const isLRMonth = d.lineRotation === "Yes";
-    const autoFillValue = isLRMonth ? "5:15" : "6:00";
-
-    const noAutoFillCodes = ["", "Vacation", "Sick", "WKCXLD"];
-
-    if (!noAutoFillCodes.includes(selectedCode)) {
-      const currentBase = String(d.rows[i].base || "").trim();
-      if (!currentBase) {
-        d.rows[i].base = autoFillValue;
-      }
-    }
-
+    saveMonth(monthSelect.value, d);
+    render();
+  });
+});
     saveMonth(monthSelect.value, d);
     render();
   });
