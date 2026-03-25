@@ -1165,13 +1165,12 @@ function render(){
     const d = loadMonth(monthSelect.value);
     const selectedCode = String(e.target.value || "").trim();
 
-    d.rows[i].code = selectedCode;
-    d.rows[i].base = "6:00";
+    d.rows[i] = {
+      ...d.rows[i],
+      code: selectedCode,
+      base: "6:00"
+    };
 
-    saveMonth(monthSelect.value, d);
-    render();
-  });
-});
     saveMonth(monthSelect.value, d);
     render();
   });
