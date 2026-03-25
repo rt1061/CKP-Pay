@@ -715,6 +715,15 @@ const DEVICE_ID = "b08dfd93-c752-4ca6-bc1a-87792f114b53";
 
   const inputDebounceTimers = new Map();
 
+  let cloudPushTimer = null;
+
+function scheduleCloudPush() {
+  clearTimeout(cloudPushTimer);
+  cloudPushTimer = setTimeout(async () => {
+    await cloudPushAll();
+  }, 3000);
+}
+
   const settingsKey = "ckp:settings:vFinal";
   const monthKey = k => `ckp:month:vFinal:${k}`;
 
@@ -1186,7 +1195,8 @@ function render(){
     }
 
     saveMonth(monthSelect.value, d);
-    render();
+render();
+scheduleCloudPush();
   });
 });
 
@@ -1195,7 +1205,8 @@ function render(){
     const i = Number(e.target.getAttribute("data-idx"));
     const d = loadMonth(monthSelect.value);
     d.rows[i].base = e.target.value;
-    saveMonth(monthSelect.value, d);
+saveMonth(monthSelect.value, d);
+scheduleCloudPush();
 
     clearTimeout(inputDebounceTimers.get(i));
     inputDebounceTimers.set(i, setTimeout(() => {
