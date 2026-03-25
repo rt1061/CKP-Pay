@@ -721,7 +721,7 @@ function scheduleCloudPush() {
   clearTimeout(cloudPushTimer);
   cloudPushTimer = setTimeout(async () => {
     await cloudPushAll();
-  }, 3000);
+  }, 1500);
 }
 
   const settingsKey = "ckp:settings:vFinal";
