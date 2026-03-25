@@ -1363,9 +1363,10 @@ $("cloudPullBtn").addEventListener("click", async ()=>{
 });
 
   $("resetBtn").addEventListener("click",()=>{
-    localStorage.removeItem(monthKey(monthSelect.value));
-    render();
-  });
+  localStorage.removeItem(monthKey(monthSelect.value));
+  render();
+  scheduleCloudPush();
+});
 
   $("backupBtn").addEventListener("click", doBackup);
   $("restoreBtn").addEventListener("click", ()=> $("restoreFile").click());
