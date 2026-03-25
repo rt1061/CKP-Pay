@@ -1159,25 +1159,26 @@ function render(){
     </div>
   `).join("");
 
-  rowsEl.querySelectorAll("select.codeSel").forEach(sel=>{
+ rowsEl.querySelectorAll("select.codeSel").forEach(sel=>{
   sel.addEventListener("change",(e)=>{
     const i = Number(e.target.getAttribute("data-idx"));
     const d = loadMonth(monthSelect.value);
-    const selectedCode = e.target.value;
+    const selectedCode = String(e.target.value || "").trim();
     d.rows[i].code = selectedCode;
 
-    const autoFillCodes = ["LC", "NH", "UG", "UGI", "WDAY", "Training", "Stan Meeting"];
     const isLRMonth = d.lineRotation === "Yes";
     const autoFillValue = isLRMonth ? "5:15" : "6:00";
 
-    if (autoFillCodes.includes(selectedCode)) {
+    const noAutoFillCodes = ["", "Vacation", "Sick", "WKCXLD"];
+
+    if (!noAutoFillCodes.includes(selectedCode)) {
       const currentBase = String(d.rows[i].base || "").trim();
       if (!currentBase) {
         d.rows[i].base = autoFillValue;
       }
     }
 
-    saveMonth(monthSelect.value,d);
+    saveMonth(monthSelect.value, d);
     render();
   });
 });
