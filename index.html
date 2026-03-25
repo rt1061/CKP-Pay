@@ -853,6 +853,23 @@ const add25 = (!isLR && count > s.otAfterDay && baseHrs > 0 && !DEFAULTS.noCount
   const incCap=(rate, cap, ytdNew, period)=> rate*max0(clamp(ytdNew,0,cap)-clamp(ytdNew-period,0,cap));
   const incAbove=(rate, thresh, ytdNew, period)=> rate*(max0(ytdNew-thresh)-max0((ytdNew-period)-thresh));
 
+  function computeFinanceSingleMonth(s, md, totalHours){
+  const advHours = 45;
+  const tuHours = max0(totalHours - advHours);
+
+  const wageAdv = s.payRate * advHours;
+  const wageTU  = s.payRate * tuHours + Number(md.otherTaxable || 0);
+
+  const grossAdv = wageAdv;
+  const grossTU  = wageTU;
+
+  return {
+    month: {
+      gross: grossAdv + grossTU
+    }
+  };
+}
+  
   function computeFinance(s, md, totalHours){
     const advHours=45;
     const tuHours=max0(totalHours-advHours);
@@ -912,33 +929,30 @@ for (let m = 1; m < monthNum; m++) {
     const netTU  = grossTU  - fedTU  - medTU  - addMedTU  - ssTU  - unionTU  - preTU  - afterTU;
 
     const month = {gross:grossAdv+grossTU,fed:fedAdv+fedTU,med:medAdv+medTU,addMed:addMedAdv+addMedTU,ss:ssAdv+ssTU,union:unionAdv+unionTU,pre:preAdv+preTU,after:afterAdv+afterTU,dc401k:dc401kAdv+dc401kTU,dcCash:dcCashAdv+dcCashTU,net:netAdv+netTU};
-    const ytd = {gross: prevYTD + month.gross, net: Number(s.netYTDSeed||0) + month.net};
+    let prevNetYTD = Number(s.netYTDSeed || 0);
+
+// Sum all previous months for NET YTD too
+for (let m = 1; m < monthNum; m++) {
+  const mk = keyFor(year, m);
+  const prevMonth = loadMonth(mk);
+  const computedPrev = computeRows(prevMonth.rows, s, prevMonth);
+  const totalPrev = computedPrev.reduce((a, r) => a + r.total, 0);
+
+  const prevFinance = computeFinanceSingleMonth(s, prevMonth, totalPrev);
+  prevNetYTD += prevFinance.month.gross; // temporary placeholder until full net logic is added
+}
+
+const ytd = {
+  gross: prevYTD + month.gross,
+  net: prevNetYTD + month.net
+};
     return {adv:{gross:grossAdv,fed:fedAdv,med:medAdv,addMed:addMedAdv,ss:ssAdv,union:unionAdv,pre:preAdv,after:afterAdv,dc401k:dc401kAdv,dcCash:dcCashAdv,net:netAdv},
             tu:{gross:grossTU,fed:fedTU,med:medTU,addMed:addMedTU,ss:ssTU,union:unionTU,pre:preTU,after:afterTU,dc401k:dc401kTU,dcCash:dcCashTU,net:netTU},
             month,ytd,prev:{gross:prevYTD,net:Number(s.netYTDSeed||0)}};
   }
 
   function renderFinance(s, md, totalHours){
-    function computeFinanceSingleMonth(s, md, totalHours){
-  const advHours=45;
-  const tuHours=Math.max(0,totalHours-advHours);
 
-  const wageAdv = s.payRate*advHours;
-  const wageTU  = s.payRate*tuHours + Number(md.otherTaxable||0);
-
-  const dc401kAdv = wageAdv * s.dcPct;
-  const dc401kTU  = wageTU  * s.dcPct;
-
-  const grossAdv = wageAdv;
-  const grossTU  = wageTU;
-
-  return {
-    month: {
-      gross: grossAdv + grossTU,
-      net: grossAdv + grossTU // rough, we only need gross for YTD
-    }
-  };
-}
     const f=computeFinance(s, md, totalHours);
     $("netAdvMini").textContent = money(f.adv.net);
     $("netTrueMini").textContent = money(f.tu.net);
