@@ -860,12 +860,56 @@ const add25 = (!isLR && count > s.otAfterDay && baseHrs > 0 && !DEFAULTS.noCount
   const wageAdv = s.payRate * advHours;
   const wageTU  = s.payRate * tuHours + Number(md.otherTaxable || 0);
 
-  const grossAdv = wageAdv;
-  const grossTU  = wageTU;
+  const prevYTD = 0;
+  const ytdAfterAdvWage = prevYTD + wageAdv;
+  const ytdAfterTUWage  = ytdAfterAdvWage + wageTU;
+
+  const dc401kAdv = incCap(s.dcPct, s.dcCap, ytdAfterAdvWage, wageAdv);
+  const dcCashAdv = incAbove(s.dcPct, s.dcCap, ytdAfterAdvWage, wageAdv);
+  const dc401kTU  = incCap(s.dcPct, s.dcCap, ytdAfterTUWage, wageTU);
+  const dcCashTU  = incAbove(s.dcPct, s.dcCap, ytdAfterTUWage, wageTU);
+
+  const grossAdv = wageAdv + dcCashAdv;
+  const grossTU  = wageTU  + dcCashTU;
+
+  const ytdAfterAdvGross = prevYTD + grossAdv;
+  const ytdAfterTUGross  = ytdAfterAdvGross + grossTU;
+
+  const fedAdv = grossAdv * lookupFedRate(grossAdv);
+  const fedTU  = grossTU  * lookupFedRate(grossTU);
+
+  const medAdv = grossAdv * s.medRate;
+  const medTU  = grossTU  * s.medRate;
+
+  const addMedAdv = incAbove(s.addMedRate, s.addMedThresh, ytdAfterAdvGross, grossAdv);
+  const addMedTU  = incAbove(s.addMedRate, s.addMedThresh, ytdAfterTUGross, grossTU);
+
+  const ssAdv = incCap(s.ssRate, s.ssWageBase, ytdAfterAdvGross, grossAdv);
+  const ssTU  = incCap(s.ssRate, s.ssWageBase, ytdAfterTUGross, grossTU);
+
+  const unionAdv = (md.unionDues === "Yes") ? grossAdv * s.unionPct : 0;
+  const unionTU  = (md.unionDues === "Yes") ? grossTU * s.unionPct : 0;
+
+  const preAdv = s.preTaxPP, preTU = s.preTaxPP;
+  const afterEach = Number(s.afterTaxPP || 0) + Number(s.afterTaxExtra || 0);
+  const afterAdv = afterEach, afterTU = afterEach;
+
+  const netAdv = grossAdv - fedAdv - medAdv - addMedAdv - ssAdv - unionAdv - preAdv - afterAdv;
+  const netTU  = grossTU  - fedTU  - medTU  - addMedTU  - ssTU  - unionTU  - preTU  - afterTU;
 
   return {
     month: {
-      gross: grossAdv + grossTU
+      gross: grossAdv + grossTU,
+      fed: fedAdv + fedTU,
+      med: medAdv + medTU,
+      addMed: addMedAdv + addMedTU,
+      ss: ssAdv + ssTU,
+      union: unionAdv + unionTU,
+      pre: preAdv + preTU,
+      after: afterAdv + afterTU,
+      dc401k: dc401kAdv + dc401kTU,
+      dcCash: dcCashAdv + dcCashTU,
+      net: netAdv + netTU
     }
   };
 }
@@ -929,6 +973,40 @@ for (let m = 1; m < monthNum; m++) {
     const netTU  = grossTU  - fedTU  - medTU  - addMedTU  - ssTU  - unionTU  - preTU  - afterTU;
 
     const month = {gross:grossAdv+grossTU,fed:fedAdv+fedTU,med:medAdv+medTU,addMed:addMedAdv+addMedTU,ss:ssAdv+ssTU,union:unionAdv+unionTU,pre:preAdv+preTU,after:afterAdv+afterTU,dc401k:dc401kAdv+dc401kTU,dcCash:dcCashAdv+dcCashTU,net:netAdv+netTU};
+    let prevTotals = {
+  gross: Number(s.grossYTDSeed || 0),
+  fed: 0,
+  med: 0,
+  addMed: 0,
+  ss: 0,
+  union: 0,
+  pre: 0,
+  after: 0,
+  dc401k: 0,
+  dcCash: 0,
+  net: Number(s.netYTDSeed || 0)
+};
+
+for (let m = 1; m < monthNum; m++) {
+  const mk = keyFor(year, m);
+  const prevMonth = loadMonth(mk);
+  const computedPrev = computeRows(prevMonth.rows, s, prevMonth);
+  const totalPrev = computedPrev.reduce((a, r) => a + r.total, 0);
+
+  const pf = computeFinanceSingleMonth(s, prevMonth, totalPrev);
+
+  prevTotals.gross += pf.month.gross;
+  prevTotals.fed += pf.month.fed;
+  prevTotals.med += pf.month.med;
+  prevTotals.addMed += pf.month.addMed;
+  prevTotals.ss += pf.month.ss;
+  prevTotals.union += pf.month.union;
+  prevTotals.pre += pf.month.pre;
+  prevTotals.after += pf.month.after;
+  prevTotals.dc401k += pf.month.dc401k;
+  prevTotals.dcCash += pf.month.dcCash;
+  prevTotals.net += pf.month.net;
+}
     let prevNetYTD = Number(s.netYTDSeed || 0);
 
 // Sum all previous months for NET YTD too
@@ -988,18 +1066,17 @@ setTxt("xExtra15", extra15);
       </div>`;
 
     financeRowsEl.innerHTML =
-      row("Gross", f.adv.gross, f.tu.gross, f.month.gross, f.ytd.gross, f.prev.gross) +
-      row("Fed", f.adv.fed, f.tu.fed, f.month.fed, 0, 0) +
-      row("Medicare", f.adv.med, f.tu.med, f.month.med, 0, 0) +
-      row("Add Medicare", f.adv.addMed, f.tu.addMed, f.month.addMed, 0, 0) +
-      row("Social Sec.", f.adv.ss, f.tu.ss, f.month.ss, 0, 0) +
-      row("Union Dues", f.adv.union, f.tu.union, f.month.union, 0, 0) +
-      row("Pre-Tax Deduc.", f.adv.pre, f.tu.pre, f.month.pre, 0, 0) +
-      row("After-Tax Deduc.", f.adv.after, f.tu.after, f.month.after, 0, 0) +
-      row("DC to 401k", f.adv.dc401k, f.tu.dc401k, f.month.dc401k, 0, 0) +
-      row("DC Cash", f.adv.dcCash, f.tu.dcCash, f.month.dcCash, 0, 0) +
-      row("NET", f.adv.net, f.tu.net, f.month.net, f.ytd.net, f.prev.net, true);
-  }
+  row("Gross", f.adv.gross, f.tu.gross, f.month.gross, f.ytd.gross, f.prev.gross) +
+  row("Fed", f.adv.fed, f.tu.fed, f.month.fed, f.ytd.fed, f.prev.fed) +
+  row("Medicare", f.adv.med, f.tu.med, f.month.med, f.ytd.med, f.prev.med) +
+  row("Add Medicare", f.adv.addMed, f.tu.addMed, f.month.addMed, f.ytd.addMed, f.prev.addMed) +
+  row("Social Sec.", f.adv.ss, f.tu.ss, f.month.ss, f.ytd.ss, f.prev.ss) +
+  row("Union Dues", f.adv.union, f.tu.union, f.month.union, f.ytd.union, f.prev.union) +
+  row("Pre-Tax Deduc.", f.adv.pre, f.tu.pre, f.month.pre, f.ytd.pre, f.prev.pre) +
+  row("After-Tax Deduc.", f.adv.after, f.tu.after, f.month.after, f.ytd.after, f.prev.after) +
+  row("DC to 401k", f.adv.dc401k, f.tu.dc401k, f.month.dc401k, f.ytd.dc401k, f.prev.dc401k) +
+  row("DC Cash", f.adv.dcCash, f.tu.dcCash, f.month.dcCash, f.ytd.dcCash, f.prev.dcCash) +
+  row("NET", f.adv.net, f.tu.net, f.month.net, f.ytd.net, f.prev.net, true);
 
   const optionsHTML = (codes, sel) => codes.map(c=>{
     const safe=String(c).replace(/"/g,'&quot;');
