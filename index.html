@@ -713,6 +713,8 @@ const DEVICE_ID = "b08dfd93-c752-4ca6-bc1a-87792f114b53";
   const udSelect = $("udSelect");
   const otherTaxableInp = $("otherTaxable");
 
+  const inputDebounceTimers = new Map();
+
   const settingsKey = "ckp:settings:vFinal";
   const monthKey = k => `ckp:month:vFinal:${k}`;
 
@@ -1189,8 +1191,24 @@ function render(){
 });
 
   rowsEl.querySelectorAll("input.baseInp").forEach(inp=>{
+  inp.addEventListener("input",(e)=>{
+    const i = Number(e.target.getAttribute("data-idx"));
+    const d = loadMonth(monthSelect.value);
+    d.rows[i].base = e.target.value;
+    saveMonth(monthSelect.value, d);
+
+    clearTimeout(inputDebounceTimers.get(i));
+    inputDebounceTimers.set(i, setTimeout(() => {
+      render();
+      inputDebounceTimers.delete(i);
+    }, 250));
+  });
+
   inp.addEventListener("blur",(e)=>{
     const i = Number(e.target.getAttribute("data-idx"));
+    clearTimeout(inputDebounceTimers.get(i));
+    inputDebounceTimers.delete(i);
+
     const d = loadMonth(monthSelect.value);
     d.rows[i].base = e.target.value;
     saveMonth(monthSelect.value, d);
@@ -1202,6 +1220,9 @@ function render(){
       e.preventDefault();
 
       const i = Number(e.target.getAttribute("data-idx"));
+      clearTimeout(inputDebounceTimers.get(i));
+      inputDebounceTimers.delete(i);
+
       const d = loadMonth(monthSelect.value);
       d.rows[i].base = e.target.value;
       saveMonth(monthSelect.value, d);
