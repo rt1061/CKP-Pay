@@ -1216,15 +1216,16 @@ scheduleCloudPush();
   });
 
   inp.addEventListener("blur",(e)=>{
-    const i = Number(e.target.getAttribute("data-idx"));
-    clearTimeout(inputDebounceTimers.get(i));
-    inputDebounceTimers.delete(i);
+  const i = Number(e.target.getAttribute("data-idx"));
+  clearTimeout(inputDebounceTimers.get(i));
+  inputDebounceTimers.delete(i);
 
-    const d = loadMonth(monthSelect.value);
-    d.rows[i].base = e.target.value;
-    saveMonth(monthSelect.value, d);
-    render();
-  });
+  const d = loadMonth(monthSelect.value);
+  d.rows[i].base = e.target.value;
+  saveMonth(monthSelect.value, d);
+  render();
+  scheduleCloudPush();
+});
 
   inp.addEventListener("keydown",(e)=>{
     if (e.key === "Enter") {
