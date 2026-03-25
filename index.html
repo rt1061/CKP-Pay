@@ -1170,7 +1170,9 @@ function render(){
     const autoFillCodes = ["LC", "NH", "UG", "UGI", "WDAY", "Training", "Stan Meeting", "WKCXLD"];
     const autoFillValue = d.lineRotation === "Yes" ? "5:15" : "6:00";
 
-    if (autoFillCodes.includes(selectedCode)) {
+    if (selectedCode === "") {
+      d.rows[i].base = "";
+    } else if (autoFillCodes.includes(selectedCode)) {
       const currentBase = String(d.rows[i].base || "").trim();
       if (!currentBase) {
         d.rows[i].base = autoFillValue;
