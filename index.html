@@ -1188,10 +1188,6 @@ function render(){
   });
 });
 
-    saveMonth(monthSelect.value, d);
-    render();
-  });
-});
 
   const totDays = computed.reduce((a,r)=>a+r.count,0);
   const totBase = computed.reduce((a,r)=>a+r.baseHrs,0);
