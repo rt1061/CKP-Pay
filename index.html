@@ -1161,17 +1161,10 @@ function render(){
 
  rowsEl.querySelectorAll("select.codeSel").forEach(sel=>{
   sel.addEventListener("change",(e)=>{
-    const i = Number(e.target.getAttribute("data-idx"));
-    const d = loadMonth(monthSelect.value);
-    const selectedCode = String(e.target.value || "").trim();
-
-    d.rows[i] = {
-      ...d.rows[i],
-      code: selectedCode,
-      base: "6:00"
-    };
-
-    saveMonth(monthSelect.value, d);
+    const i=Number(e.target.getAttribute("data-idx"));
+    const d=loadMonth(monthSelect.value);
+    d.rows[i].code=e.target.value;
+    saveMonth(monthSelect.value,d);
     render();
   });
 });
