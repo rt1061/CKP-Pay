@@ -1172,12 +1172,21 @@ function render(){
 
     if (selectedCode === "") {
       d.rows[i].base = "";
-    } else if (autoFillCodes.includes(selectedCode)) {
-      const currentBase = String(d.rows[i].base || "").trim();
-      if (!currentBase) {
-        d.rows[i].base = autoFillValue;
-      }
+    } 
+    else if (selectedCode === "Vacation") {
+      d.rows[i].base = "4:35";
     }
+    else if (selectedCode === "Sick") {
+      d.rows[i].base = "";
+    }
+    else if (autoFillCodes.includes(selectedCode)) {
+      d.rows[i].base = autoFillValue;
+    }
+
+    saveMonth(monthSelect.value, d);
+    render();
+  });
+});
 
     saveMonth(monthSelect.value, d);
     render();
