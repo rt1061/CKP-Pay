@@ -1021,12 +1021,26 @@ for (let m = 1; m < monthNum; m++) {
 }
 
 const ytd = {
-  gross: prevYTD + month.gross,
-  net: prevNetYTD + month.net
+  gross: prevTotals.gross + month.gross,
+  fed: prevTotals.fed + month.fed,
+  med: prevTotals.med + month.med,
+  addMed: prevTotals.addMed + month.addMed,
+  ss: prevTotals.ss + month.ss,
+  union: prevTotals.union + month.union,
+  pre: prevTotals.pre + month.pre,
+  after: prevTotals.after + month.after,
+  dc401k: prevTotals.dc401k + month.dc401k,
+  dcCash: prevTotals.dcCash + month.dcCash,
+  net: prevTotals.net + month.net
 };
-    return {adv:{gross:grossAdv,fed:fedAdv,med:medAdv,addMed:addMedAdv,ss:ssAdv,union:unionAdv,pre:preAdv,after:afterAdv,dc401k:dc401kAdv,dcCash:dcCashAdv,net:netAdv},
-            tu:{gross:grossTU,fed:fedTU,med:medTU,addMed:addMedTU,ss:ssTU,union:unionTU,pre:preTU,after:afterTU,dc401k:dc401kTU,dcCash:dcCashTU,net:netTU},
-            month,ytd,prev:{gross:prevYTD,net:Number(s.netYTDSeed||0)}};
+
+return {
+  adv:{gross:grossAdv,fed:fedAdv,med:medAdv,addMed:addMedAdv,ss:ssAdv,union:unionAdv,pre:preAdv,after:afterAdv,dc401k:dc401kAdv,dcCash:dcCashAdv,net:netAdv},
+  tu:{gross:grossTU,fed:fedTU,med:medTU,addMed:addMedTU,ss:ssTU,union:unionTU,pre:preTU,after:afterTU,dc401k:dc401kTU,dcCash:dcCashTU,net:netTU},
+  month,
+  ytd,
+  prev: prevTotals
+};
   }
 
   function renderFinance(s, md, totalHours){
