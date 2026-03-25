@@ -1201,7 +1201,7 @@ function render(){
     inputDebounceTimers.set(i, setTimeout(() => {
       render();
       inputDebounceTimers.delete(i);
-    }, 250));
+    }, 1000));
   });
 
   inp.addEventListener("blur",(e)=>{
