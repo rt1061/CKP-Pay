@@ -1188,6 +1188,38 @@ function render(){
   });
 });
 
+  rowsEl.querySelectorAll("input.baseInp").forEach(inp=>{
+  inp.addEventListener("blur",(e)=>{
+    const i = Number(e.target.getAttribute("data-idx"));
+    const d = loadMonth(monthSelect.value);
+    d.rows[i].base = e.target.value;
+    saveMonth(monthSelect.value, d);
+    render();
+  });
+
+  inp.addEventListener("keydown",(e)=>{
+    if (e.key === "Enter") {
+      e.preventDefault();
+
+      const i = Number(e.target.getAttribute("data-idx"));
+      const d = loadMonth(monthSelect.value);
+      d.rows[i].base = e.target.value;
+      saveMonth(monthSelect.value, d);
+      render();
+
+      const nextIdx = i + 1;
+
+      requestAnimationFrame(() => {
+        const nextInput = rowsEl.querySelector(`input.baseInp[data-idx="${nextIdx}"]`);
+        if (nextInput) {
+          nextInput.focus();
+          nextInput.select();
+        }
+      });
+    }
+  });
+});
+
 
   const totDays = computed.reduce((a,r)=>a+r.count,0);
   const totBase = computed.reduce((a,r)=>a+r.baseHrs,0);
