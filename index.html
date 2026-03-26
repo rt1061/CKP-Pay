@@ -456,7 +456,17 @@ button.ok:hover{background:rgba(106,168,255,.32)}
 <div id="budgetRoot" style="display:none; padding:16px;"></div>
 <!-- everything else that was already there stays below -->
 <header class="topbar">
+  <div style="display:flex; align-items:center; gap:16px;">
   <div class="brand">CKP Pay Hours</div>
+  <div id="topTotalHours" style="
+    font-weight:900;
+    font-size:18px;
+    color:var(--gold);
+    font-variant-numeric:tabular-nums;
+  ">
+    0.00
+  </div>
+</div>
   <div class="actions">
     <select id="monthSelect"></select>
     <span class="smallTag" id="cloudTag">Cloud: …</span>
@@ -1352,6 +1362,8 @@ scheduleCloudPush();
   $("sumOverride").textContent=fmt2(totOV);
   $("sumPremOT").textContent=fmt2(totPremOT);
   $("sumGrand").textContent=fmt2(totTotal);
+  const topTotal = $("topTotalHours");
+if (topTotal) topTotal.textContent = fmt2(totTotal);
 
   renderFinance(s, md, totTotal);
 }
