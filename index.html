@@ -449,13 +449,21 @@ button.ok:hover{background:rgba(106,168,255,.32)}
 .hoursRow{
   display:flex;
   align-items:center;
-  gap:6px;
+  gap:8px;
   font-size:14px;
+}
+
+.hoursLabel{
+  color:var(--muted);
+  font-size:13px;
+  font-weight:700;
 }
 
 .hoursRow #topTotalHours{
   font-weight:900;
+  font-size:18px;
   color:var(--gold);
+  font-variant-numeric:tabular-nums;
 }
   .desktopStickySummaryInner > .dssCompactCard{
   flex:0 0 28%;
@@ -594,7 +602,7 @@ button.ok:hover{background:rgba(106,168,255,.32)}
     <span class="smallTag" id="cloudTag">Cloud: …</span>
   </div>
   <div class="hoursRow">
-    <span class="smallTag">Total Hours</span>
+    <span class="hoursLabel">Total Hours</span>
     <span id="topTotalHours">0.00</span>
   </div>
 </div>
