@@ -433,6 +433,30 @@ button.ok:hover{background:rgba(106,168,255,.32)}
   margin-left:auto;
   max-width:48%;
 }
+  .monthBlock{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  margin-right:10px;
+}
+
+.monthRow{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.hoursRow{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:14px;
+}
+
+.hoursRow #topTotalHours{
+  font-weight:900;
+  color:var(--gold);
+}
   .desktopStickySummaryInner > .dssCompactCard{
   flex:0 0 28%;
   min-width:300px;
@@ -572,8 +596,16 @@ button.ok:hover{background:rgba(106,168,255,.32)}
       </div>
     </div>
   <div class="desktopStickyControls">
-  <select id="monthSelect"></select>
-  <span class="smallTag" id="cloudTag">Cloud: …</span>
+  <div class="monthBlock">
+  <div class="monthRow">
+    <select id="monthSelect"></select>
+    <span class="smallTag" id="cloudTag">Cloud: …</span>
+  </div>
+  <div class="hoursRow">
+    <span class="smallTag">Total Hours</span>
+    <span id="topTotalHours">0.00</span>
+  </div>
+</div>
   <button id="cloudPullBtn" class="ok">Cloud Pull</button>
   <button id="cloudPushBtn" class="ok">Cloud Push</button>
   <button id="backupBtn">Backup JSON</button>
