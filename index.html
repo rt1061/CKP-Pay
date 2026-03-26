@@ -1393,7 +1393,13 @@ $("cloudPullBtn").addEventListener("click", async ()=>{
   $("exportBtn").addEventListener("click", exportCSV);
 
   shfsSelect.addEventListener("change",()=>{const d=loadMonth(monthSelect.value); d.shfs=shfsSelect.value; saveMonth(monthSelect.value,d);});
-  lrSelect.addEventListener("change",()=>{const d=loadMonth(monthSelect.value); d.lineRotation=lrSelect.value; saveMonth(monthSelect.value,d); render();});
+  lrSelect.addEventListener("change",()=>{
+  const d = loadMonth(monthSelect.value);
+  d.lineRotation = lrSelect.value;
+  saveMonth(monthSelect.value, d);
+  render();
+  scheduleCloudPush();
+});
   udSelect.addEventListener("change",()=>{const d=loadMonth(monthSelect.value); d.unionDues=udSelect.value; saveMonth(monthSelect.value,d); render();});
   otherTaxableInp.addEventListener("change",()=>{const d=loadMonth(monthSelect.value); d.otherTaxable=Number(otherTaxableInp.value||0); saveMonth(monthSelect.value,d); render();});
 
