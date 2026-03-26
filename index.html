@@ -418,10 +418,10 @@ button.ok:hover{background:rgba(106,168,255,.32)}
   }
 
   .desktopStickySummaryInner{
-  display:grid;
-  grid-template-columns:auto 1fr;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
   gap:16px;
-  align-items:center;
 }
 
 .desktopStickyControls{
@@ -430,6 +430,12 @@ button.ok:hover{background:rgba(106,168,255,.32)}
   gap:8px;
   justify-content:flex-end;
   align-items:center;
+  margin-left:auto;
+  max-width:48%;
+}
+  .desktopStickySummaryInner > .dssCompactCard{
+  flex:0 0 28%;
+  min-width:300px;
 }
 
   .dssCompactCard{
