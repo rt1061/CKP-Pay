@@ -420,6 +420,9 @@ button.ok:hover{background:rgba(106,168,255,.32)}
     padding:10px 12px calc(10px + env(safe-area-inset-bottom));
     background:#081223;
     border-top:1px solid rgba(255,255,255,.08);
+      .tabBar{
+    display:none;
+      }
   }
 
   .mobileNavBtn{
@@ -1926,9 +1929,45 @@ if (desktopTabBudget && $("tabBudget")) {
 } 
 
   // Re-render any time budget.js tells us totals changed
-window.addEventListener("ckp-budget-updated", () => {
+const mobileNavPay = $("mobileNavPay");
+const mobileNavBudget = $("mobileNavBudget");
+const mobileNavSettings = $("mobileNavSettings");
+
+function syncMobileNav(){
+  if (!mobileNavPay || !mobileNavBudget) return;
+  mobileNavPay.classList.toggle("active", $("tabCkp")?.classList.contains("active"));
+  mobileNavBudget.classList.toggle("active", $("tabBudget")?.classList.contains("active"));
+}
+
+if (mobileNavPay && $("tabCkp")) {
+  mobileNavPay.addEventListener("click", () => {
+    $("tabCkp").click();
+    setTimeout(syncMobileNav, 0);
+  });
+}
+
+if (mobileNavBudget && $("tabBudget")) {
+  mobileNavBudget.addEventListener("click", () => {
+    $("tabBudget").click();
+    setTimeout(syncMobileNav, 0);
+  });
+}
+
+if (mobileNavSettings) {
+  mobileNavSettings.addEventListener("click", () => {
+    const settingsEl = document.querySelector("details.settings");
+    if (settingsEl) {
+      settingsEl.open = true;
+      settingsEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
+}
+
+syncMobileNav();
+  window.addEventListener("ckp-budget-updated", () => {
   render();
   syncDesktopTabs();
+  syncMobileNav();
 });
 })();
 
