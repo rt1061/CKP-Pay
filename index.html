@@ -440,6 +440,19 @@ button.ok:hover{background:rgba(106,168,255,.32)}
     color:var(--gold);
     font-variant-numeric:tabular-nums;
   }
+  .dssSubLabel{
+  margin-top:8px;
+  font-size:11px;
+  color:var(--muted);
+  font-weight:700;
+}
+
+.dssSubValue{
+  font-size:16px;
+  font-weight:900;
+  color:var(--text);
+  font-variant-numeric:tabular-nums;
+}
 
   .layout{
     padding-top:12px;
@@ -481,17 +494,21 @@ button.ok:hover{background:rgba(106,168,255,.32)}
 </header>
   <div class="desktopStickySummary">
   <div class="dssCard">
-    <div class="dssLabel">Advance Net</div>
-    <div class="dssValue" id="stickyAdvNet">$0.00</div>
-  </div>
+  <div class="dssLabel">Advance Net</div>
+  <div class="dssValue" id="stickyAdvNet">$0.00</div>
+  <div class="dssSubLabel">Budget Total (1st)</div>
+  <div class="dssSubValue" id="stickyBud1">$0.00</div>
+</div>
   <div class="dssCard">
     <div class="dssLabel">Extra Available (1st)</div>
     <div class="dssValue" id="stickyExtra1">$0.00</div>
   </div>
   <div class="dssCard">
-    <div class="dssLabel">True-Up Net</div>
-    <div class="dssValue" id="stickyTrueNet">$0.00</div>
-  </div>
+  <div class="dssLabel">True-Up Net</div>
+  <div class="dssValue" id="stickyTrueNet">$0.00</div>
+  <div class="dssSubLabel">Budget Total (15th)</div>
+  <div class="dssSubValue" id="stickyBud15">$0.00</div>
+</div>
   <div class="dssCard">
     <div class="dssLabel">Extra Available (15th)</div>
     <div class="dssValue" id="stickyExtra15">$0.00</div>
@@ -1164,6 +1181,8 @@ setTxt("stickyAdvNet", advNet);
 setTxt("stickyExtra1", extra1);
 setTxt("stickyTrueNet", trueNet);
 setTxt("stickyExtra15", extra15);
+setTxt("stickyBud1", bt.total1);
+setTxt("stickyBud15", bt.total15);
 
     const row=(label,a,t,m,y,p,isNet=false)=>`
       <div class="finGrid ${isNet?'finNet':''}">
