@@ -430,14 +430,15 @@ button.ok:hover{background:rgba(106,168,255,.32)}
   gap:8px;
   justify-content:flex-end;
   align-items:center;
-  margin-left:auto;
-  max-width:48%;
+  justify-content:center;
+  flex:1;
 }
   .monthBlock{
   display:flex;
   flex-direction:column;
   gap:4px;
-  margin-right:10px;
+  align-items:center;       /* 👈 center text horizontally */
+  justify-content:center;   /* 👈 vertical centering */
 }
 
 .monthRow{
