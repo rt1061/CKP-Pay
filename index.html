@@ -1283,7 +1283,8 @@ scheduleCloudPush();
       const s=loadSettings();
       s[key]=cast($(id).value);
       saveSettings(s);
-      if(key==="contractYear"){
+scheduleCloudPush();
+if(key==="contractYear"){
         initMonths(s.contractYear);
         monthSelect.value=keyFor(s.contractYear,1);
       }
@@ -1392,7 +1393,12 @@ $("cloudPullBtn").addEventListener("click", async ()=>{
 
   $("exportBtn").addEventListener("click", exportCSV);
 
-  shfsSelect.addEventListener("change",()=>{const d=loadMonth(monthSelect.value); d.shfs=shfsSelect.value; saveMonth(monthSelect.value,d);});
+  shfsSelect.addEventListener("change",()=>{
+  const d = loadMonth(monthSelect.value);
+  d.shfs = shfsSelect.value;
+  saveMonth(monthSelect.value, d);
+  scheduleCloudPush();
+});
   lrSelect.addEventListener("change",()=>{
   const d = loadMonth(monthSelect.value);
   d.lineRotation = lrSelect.value;
