@@ -406,7 +406,42 @@ button.ok:hover{background:rgba(106,168,255,.32)}
   display:none;
 }
 
-@media (min-width: 1181px){
+@media (max-width: 1180px){
+  .mobileBottomNav{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:60;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    gap:8px;
+    padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+    background:#081223;
+    border-top:1px solid rgba(255,255,255,.08);
+  }
+
+  .mobileNavBtn{
+    flex:1;
+    padding:10px 12px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,.10);
+    background:rgba(255,255,255,.08);
+    color:var(--text);
+    font-weight:800;
+  }
+
+  .mobileNavBtn.active{
+    background:rgba(106,168,255,.20);
+    border-color:rgba(106,168,255,.35);
+  }
+
+  body{
+    padding-bottom:84px;
+  }
+}
+  @media (min-width: 1181px){
   .tabBar{
     display:none;
   }
@@ -1900,5 +1935,10 @@ window.addEventListener("ckp-budget-updated", () => {
   </script>
 
 <script type="module" src="budget.js"></script>
+<div class="mobileBottomNav">
+  <button id="mobileNavPay" class="mobileNavBtn active">Pay</button>
+  <button id="mobileNavBudget" class="mobileNavBtn">Budget</button>
+  <button id="mobileNavSettings" class="mobileNavBtn">Settings</button>
+</div>
 </body>
 </html>
