@@ -429,16 +429,14 @@ button.ok:hover{background:rgba(106,168,255,.32)}
   flex-wrap:wrap;
   gap:8px;
   justify-content:flex-end;
-  align-items:center;
-  justify-content:center;
-  flex:1;
+  align-items:flex-start;
+  margin-left:auto;
 }
-  .monthBlock{
+.monthBlock{
   display:flex;
   flex-direction:column;
-  gap:4px;
-  align-items:center;       /* 👈 center text horizontally */
-  justify-content:center;   /* 👈 vertical centering */
+  gap:6px;
+  margin-right:10px;
 }
 
 .monthRow{
@@ -450,8 +448,9 @@ button.ok:hover{background:rgba(106,168,255,.32)}
 .hoursRow{
   display:flex;
   align-items:center;
+  justify-content:center;
   gap:8px;
-  font-size:14px;
+  width:100%;
 }
 
 .hoursLabel{
