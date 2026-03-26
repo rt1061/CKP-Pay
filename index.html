@@ -1400,7 +1400,13 @@ $("cloudPullBtn").addEventListener("click", async ()=>{
   render();
   scheduleCloudPush();
 });
-  udSelect.addEventListener("change",()=>{const d=loadMonth(monthSelect.value); d.unionDues=udSelect.value; saveMonth(monthSelect.value,d); render();});
+  udSelect.addEventListener("change",()=>{
+  const d = loadMonth(monthSelect.value);
+  d.unionDues = udSelect.value;
+  saveMonth(monthSelect.value, d);
+  render();
+  scheduleCloudPush();
+});
   otherTaxableInp.addEventListener("change",()=>{const d=loadMonth(monthSelect.value); d.otherTaxable=Number(otherTaxableInp.value||0); saveMonth(monthSelect.value,d); render();});
 
   bindSetting("contractYear","contractYear",v=>parseInt(v,10)||DEFAULTS.contractYear);
