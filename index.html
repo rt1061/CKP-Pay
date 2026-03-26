@@ -407,6 +407,10 @@ button.ok:hover{background:rgba(106,168,255,.32)}
 }
 
 @media (max-width: 1180px){
+  .tabBar{
+    display:none;
+  }
+
   .mobileBottomNav{
     position:fixed;
     left:0;
@@ -420,9 +424,6 @@ button.ok:hover{background:rgba(106,168,255,.32)}
     padding:10px 12px calc(10px + env(safe-area-inset-bottom));
     background:#081223;
     border-top:1px solid rgba(255,255,255,.08);
-      .tabBar{
-    display:none;
-      }
   }
 
   .mobileNavBtn{
@@ -996,7 +997,14 @@ button.ok:hover{background:rgba(106,168,255,.32)}
   </aside>
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script type="module" src="budget.js"></script>
+<div class="mobileBottomNav">
+  <button id="mobileNavPay" class="mobileNavBtn active">Pay</button>
+  <button id="mobileNavBudget" class="mobileNavBtn">Budget</button>
+  <button id="mobileNavSettings" class="mobileNavBtn">Settings</button>
+</div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (() => {
 
@@ -1973,11 +1981,6 @@ syncMobileNav();
 
   </script>
 
-<script type="module" src="budget.js"></script>
-<div class="mobileBottomNav">
-  <button id="mobileNavPay" class="mobileNavBtn active">Pay</button>
-  <button id="mobileNavBudget" class="mobileNavBtn">Budget</button>
-  <button id="mobileNavSettings" class="mobileNavBtn">Settings</button>
-</div>
+
 </body>
 </html>
