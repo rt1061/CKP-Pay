@@ -1189,8 +1189,12 @@ function render(){
       d.rows[i].base = "4:35";
     }
     else if (selectedCode === "Sick") {
-      d.rows[i].base = "";
-    }
+  if (d.shfs === "SH") {
+    d.rows[i].base = "6:00";
+  } else {
+    d.rows[i].base = ""; // FS → manual entry
+  }
+}
     else if (autoFillCodes.includes(selectedCode)) {
       d.rows[i].base = autoFillValue;
     }
