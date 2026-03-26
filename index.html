@@ -408,18 +408,23 @@ button.ok:hover{background:rgba(106,168,255,.32)}
 
 @media (min-width: 1181px){
   .desktopStickySummary{
-    display:grid;
-    grid-template-columns:repeat(2, 1fr);
-    gap:12px;
-    padding:10px 16px 12px;
+    display:block;
     position:sticky;
     top:69px;
     z-index:45;
     background:#081223;
     border-bottom:1px solid rgba(255,255,255,.08);
+    padding:8px 16px 10px;
   }
 
-  .dssCard{
+  .desktopStickySummaryInner{
+    display:grid;
+    grid-template-columns:repeat(2, minmax(320px, 420px));
+    gap:12px;
+    align-items:stretch;
+  }
+
+  .dssCompactCard{
     background:linear-gradient(145deg,#0e1624,#0b1320);
     border:1px solid rgba(255,255,255,.08);
     border-radius:14px;
@@ -427,45 +432,63 @@ button.ok:hover{background:rgba(106,168,255,.32)}
     box-shadow:0 10px 25px rgba(0,0,0,.35);
   }
 
-  .dssLabel{
-    font-size:12px;
+  .dssCompactTitle{
+    font-size:13px;
+    font-weight:800;
     color:var(--muted);
-    margin-bottom:4px;
-    font-weight:700;
+    margin-bottom:6px;
   }
 
-  .dssValue{
-    font-size:24px;
+  .dssCompactMainRow{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:20px;
+  }
+
+  .dssMiniLabel{
+    font-size:11px;
+    color:var(--muted);
+    font-weight:700;
+    margin-bottom:2px;
+    display:block;
+  }
+
+  .dssCompactNet{
+    font-size:26px;
     font-weight:950;
     color:var(--gold);
     font-variant-numeric:tabular-nums;
+    line-height:1.05;
   }
-  .dssSubLabel{
-  margin-top:8px;
-  font-size:11px;
-  color:var(--muted);
-  font-weight:700;
-}
 
-.dssSubValue{
-  font-size:16px;
-  font-weight:900;
-  color:var(--text);
-  font-variant-numeric:tabular-nums;
-}
-  .dssSubRow{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  margin-top:10px;
-}
+  .dssCompactExtra{
+    font-size:26px;
+    font-weight:950;
+    font-variant-numeric:tabular-nums;
+    line-height:1.05;
+    text-align:right;
+  }
 
-.dssBudgetValue{
-  color:var(--muted);
-}
+  .dssCompactBottom{
+    margin-top:8px;
+    padding-top:8px;
+    border-top:1px solid rgba(255,255,255,.06);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+  }
+
+  .dssCompactBudget{
+    font-size:16px;
+    font-weight:900;
+    color:var(--muted);
+    font-variant-numeric:tabular-nums;
+  }
 
   .layout{
-    padding-top:12px;
+    padding-top:8px;
   }
 }
 </style>
@@ -503,22 +526,50 @@ button.ok:hover{background:rgba(106,168,255,.32)}
   </div>
 </header>
   <div class="desktopStickySummary">
+  <div class="desktopStickySummaryInner">
 
-  <div class="dssCard">
-    <div class="dssLabel">Advance Net</div>
-    <div class="dssValue" id="stickyAdvNet">$0.00</div>
+    <div class="dssCompactCard">
+      <div class="dssCompactTitle">Advance</div>
 
-    <div class="dssSubRow">
-      <div>
-        <div class="dssSubLabel">Budget (1st)</div>
-        <div class="dssSubValue dssBudgetValue" id="stickyBud1">$0.00</div>
+      <div class="dssCompactMainRow">
+        <div>
+          <div class="dssMiniLabel">Net</div>
+          <div class="dssCompactNet" id="stickyAdvNet">$0.00</div>
+        </div>
+        <div>
+          <div class="dssMiniLabel">Extra</div>
+          <div class="dssCompactExtra" id="stickyExtra1">$0.00</div>
+        </div>
       </div>
-      <div>
-        <div class="dssSubLabel">Extra (1st)</div>
-        <div class="dssSubValue" id="stickyExtra1">$0.00</div>
+
+      <div class="dssCompactBottom">
+        <span class="dssMiniLabel">Budget (1st)</span>
+        <span class="dssCompactBudget" id="stickyBud1">$0.00</span>
       </div>
     </div>
+
+    <div class="dssCompactCard">
+      <div class="dssCompactTitle">True-Up</div>
+
+      <div class="dssCompactMainRow">
+        <div>
+          <div class="dssMiniLabel">Net</div>
+          <div class="dssCompactNet" id="stickyTrueNet">$0.00</div>
+        </div>
+        <div>
+          <div class="dssMiniLabel">Extra</div>
+          <div class="dssCompactExtra" id="stickyExtra15">$0.00</div>
+        </div>
+      </div>
+
+      <div class="dssCompactBottom">
+        <span class="dssMiniLabel">Budget (15th)</span>
+        <span class="dssCompactBudget" id="stickyBud15">$0.00</span>
+      </div>
+    </div>
+
   </div>
+</div>
 
   <div class="dssCard">
     <div class="dssLabel">True-Up Net</div>
