@@ -726,6 +726,7 @@ function scheduleCloudPush() {
 
   const settingsKey = "ckp:settings:vFinal";
   const monthKey = k => `ckp:month:vFinal:${k}`;
+  const lastMonthKey = "ckp:lastMonth:vFinal";
 
   const fmt2 = x => (Math.round(x * 100) / 100).toFixed(2);
   const money = x => (Math.round(x * 100) / 100).toLocaleString(undefined,{style:"currency",currency:"USD"});
@@ -1351,11 +1352,22 @@ scheduleCloudPush();
   }
 
   // INIT
-  const s0=loadSettings();
-  initMonths(s0.contractYear);
-  monthSelect.value=keyFor(s0.contractYear,1);
-  monthSelect.addEventListener("change",render);
+  const s0 = loadSettings();
+initMonths(s0.contractYear);
 
+const savedMonth = localStorage.getItem(lastMonthKey);
+const defaultMonth = keyFor(s0.contractYear, 1);
+
+if (savedMonth && savedMonth.startsWith(`${s0.contractYear}-`)) {
+  monthSelect.value = savedMonth;
+} else {
+  monthSelect.value = defaultMonth;
+}
+
+monthSelect.addEventListener("change",()=>{
+  localStorage.setItem(lastMonthKey, monthSelect.value);
+  render();
+});
   $("cloudPushBtn").addEventListener("click", ()=> cloudPushAll());
 $("cloudPullBtn").addEventListener("click", async ()=>{
   const changed = await cloudPullAll();
