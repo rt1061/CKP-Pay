@@ -409,7 +409,7 @@ button.ok:hover{background:rgba(106,168,255,.32)}
 @media (min-width: 1181px){
   .desktopStickySummary{
     display:grid;
-    grid-template-columns:repeat(4, 1fr);
+    grid-template-columns:repeat(2, 1fr);
     gap:12px;
     padding:10px 16px 12px;
     position:sticky;
@@ -453,6 +453,16 @@ button.ok:hover{background:rgba(106,168,255,.32)}
   color:var(--text);
   font-variant-numeric:tabular-nums;
 }
+  .dssSubRow{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:10px;
+}
+
+.dssBudgetValue{
+  color:var(--muted);
+}
 
   .layout{
     padding-top:12px;
@@ -493,11 +503,39 @@ button.ok:hover{background:rgba(106,168,255,.32)}
   </div>
 </header>
   <div class="desktopStickySummary">
+
   <div class="dssCard">
-  <div class="dssLabel">Advance Net</div>
-  <div class="dssValue" id="stickyAdvNet">$0.00</div>
-  <div class="dssSubLabel">Budget Total (1st)</div>
-  <div class="dssSubValue" id="stickyBud1">$0.00</div>
+    <div class="dssLabel">Advance Net</div>
+    <div class="dssValue" id="stickyAdvNet">$0.00</div>
+
+    <div class="dssSubRow">
+      <div>
+        <div class="dssSubLabel">Budget (1st)</div>
+        <div class="dssSubValue dssBudgetValue" id="stickyBud1">$0.00</div>
+      </div>
+      <div>
+        <div class="dssSubLabel">Extra (1st)</div>
+        <div class="dssSubValue" id="stickyExtra1">$0.00</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dssCard">
+    <div class="dssLabel">True-Up Net</div>
+    <div class="dssValue" id="stickyTrueNet">$0.00</div>
+
+    <div class="dssSubRow">
+      <div>
+        <div class="dssSubLabel">Budget (15th)</div>
+        <div class="dssSubValue dssBudgetValue" id="stickyBud15">$0.00</div>
+      </div>
+      <div>
+        <div class="dssSubLabel">Extra (15th)</div>
+        <div class="dssSubValue" id="stickyExtra15">$0.00</div>
+      </div>
+    </div>
+  </div>
+
 </div>
   <div class="dssCard">
     <div class="dssLabel">Extra Available (1st)</div>
@@ -1183,6 +1221,15 @@ setTxt("stickyTrueNet", trueNet);
 setTxt("stickyExtra15", extra15);
 setTxt("stickyBud1", bt.total1);
 setTxt("stickyBud15", bt.total15);
+const stickyExtra1El = $("stickyExtra1");
+if (stickyExtra1El) {
+  stickyExtra1El.style.color = extra1 >= 0 ? "#57d38c" : "#ff6b6b";
+}
+
+const stickyExtra15El = $("stickyExtra15");
+if (stickyExtra15El) {
+  stickyExtra15El.style.color = extra15 >= 0 ? "#57d38c" : "#ff6b6b";
+}
 
     const row=(label,a,t,m,y,p,isNet=false)=>`
       <div class="finGrid ${isNet?'finNet':''}">
