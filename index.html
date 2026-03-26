@@ -407,15 +407,173 @@ button.ok:hover{background:rgba(106,168,255,.32)}
 }
 
 @media (min-width: 1181px){
+  .tabBar{
+    display:none;
+  }
+
+  .topbar{
+    display:none;
+  }
+
   .desktopStickySummary{
     display:block;
+    position:-webkit-sticky;
     position:sticky;
-    top:69px;
-    z-index:45;
+    top:0;
+    z-index:50;
     background:#081223;
     border-bottom:1px solid rgba(255,255,255,.08);
-    padding:8px 16px 10px;
+    padding:10px 16px;
   }
+
+  .desktopStickyGrid{
+    display:grid;
+    grid-template-columns: minmax(300px, 1fr) minmax(300px, 1fr) 220px minmax(520px, 1.2fr);
+    gap:14px;
+    align-items:stretch;
+  }
+
+  .dssCompactCard{
+    background:linear-gradient(145deg,#0e1624,#0b1320);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:18px;
+    padding:16px 18px;
+    box-shadow:0 10px 25px rgba(0,0,0,.35);
+    height:100%;
+  }
+
+  .dssCompactTitle{
+    font-size:16px;
+    font-weight:900;
+    color:var(--muted);
+    margin-bottom:10px;
+  }
+
+  .dssCompactMainRow{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:16px;
+  }
+
+  .dssMiniLabel{
+    font-size:12px;
+    color:var(--muted);
+    font-weight:700;
+    margin-bottom:4px;
+    display:block;
+  }
+
+  .dssCompactNet{
+    font-size:36px;
+    font-weight:950;
+    color:var(--gold);
+    font-variant-numeric:tabular-nums;
+    line-height:1;
+  }
+
+  .dssCompactExtra{
+    font-size:36px;
+    font-weight:950;
+    font-variant-numeric:tabular-nums;
+    line-height:1;
+    text-align:right;
+  }
+
+  .dssCompactBottom{
+    margin-top:14px;
+    padding-top:12px;
+    border-top:1px solid rgba(255,255,255,.06);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+  }
+
+  .dssCompactBudget{
+    font-size:18px;
+    font-weight:900;
+    color:var(--muted);
+    font-variant-numeric:tabular-nums;
+  }
+
+  .stickyZone3{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:12px;
+    height:100%;
+  }
+
+  .desktopTabRow{
+    display:flex;
+    gap:8px;
+    justify-content:center;
+  }
+
+  .stickyHoursBox{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg, #d96a1f, #f08a2b);
+    border-radius:14px;
+    padding:12px 14px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.35);
+  }
+
+  .stickyHoursLabel{
+    color:#ffffff;
+    font-size:14px;
+    font-weight:800;
+    margin-bottom:4px;
+  }
+
+  .stickyHoursValue{
+    color:#ffffff;
+    font-size:30px;
+    font-weight:950;
+    line-height:1;
+    font-variant-numeric:tabular-nums;
+  }
+
+  .stickyZone4{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:12px;
+    height:100%;
+  }
+
+  .stickyControlsTop{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    justify-content:flex-start;
+  }
+
+  .stickyControlsButtons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    align-items:center;
+  }
+
+  .stickyControlsButtons button,
+  .stickyControlsTop select,
+  .stickyControlsTop .smallTag{
+    font-size:12px;
+  }
+
+  .stickyControlsButtons button{
+    padding:8px 10px;
+    border-radius:10px;
+  }
+
+  .layout{
+    padding-top:8px;
+  }
+
 
   .desktopStickySummaryInner{
   display:flex;
@@ -556,60 +714,62 @@ button.ok:hover{background:rgba(106,168,255,.32)}
 <!-- everything else that was already there stays below -->
 
 <header class="topbar"></header>
-  <div class="desktopStickySummary">
 <div class="desktopStickySummary">
-  <div class="desktopStickySummaryInner">
+  <div class="desktopStickyGrid">
 
-    <div class="stickyLeft">
-      <div class="dssCompactCard">
-        <div class="dssCompactTitle">Advance</div>
+    <div class="dssCompactCard">
+      <div class="dssCompactTitle">Advance</div>
 
-        <div class="dssCompactMainRow">
-          <div>
-            <div class="dssMiniLabel">Net</div>
-            <div class="dssCompactNet" id="stickyAdvNet">$0.00</div>
-          </div>
-          <div>
-            <div class="dssMiniLabel">Extra</div>
-            <div class="dssCompactExtra" id="stickyExtra1">$0.00</div>
-          </div>
+      <div class="dssCompactMainRow">
+        <div>
+          <div class="dssMiniLabel">Net</div>
+          <div class="dssCompactNet" id="stickyAdvNet">$0.00</div>
         </div>
-
-        <div class="dssCompactBottom">
-          <span class="dssMiniLabel">Budget (1st)</span>
-          <span class="dssCompactBudget" id="stickyBud1">$0.00</span>
+        <div>
+          <div class="dssMiniLabel">Extra</div>
+          <div class="dssCompactExtra" id="stickyExtra1">$0.00</div>
         </div>
       </div>
 
-      <div class="dssCompactCard">
-        <div class="dssCompactTitle">True-Up</div>
-
-        <div class="dssCompactMainRow">
-          <div>
-            <div class="dssMiniLabel">Net</div>
-            <div class="dssCompactNet" id="stickyTrueNet">$0.00</div>
-          </div>
-          <div>
-            <div class="dssMiniLabel">Extra</div>
-            <div class="dssCompactExtra" id="stickyExtra15">$0.00</div>
-          </div>
-        </div>
-
-        <div class="dssCompactBottom">
-          <span class="dssMiniLabel">Budget (15th)</span>
-          <span class="dssCompactBudget" id="stickyBud15">$0.00</span>
-        </div>
+      <div class="dssCompactBottom">
+        <span class="dssMiniLabel">Budget (1st)</span>
+        <span class="dssCompactBudget" id="stickyBud1">$0.00</span>
       </div>
     </div>
 
-    <div class="stickyCenter">
+    <div class="dssCompactCard">
+      <div class="dssCompactTitle">True-Up</div>
+
+      <div class="dssCompactMainRow">
+        <div>
+          <div class="dssMiniLabel">Net</div>
+          <div class="dssCompactNet" id="stickyTrueNet">$0.00</div>
+        </div>
+        <div>
+          <div class="dssMiniLabel">Extra</div>
+          <div class="dssCompactExtra" id="stickyExtra15">$0.00</div>
+        </div>
+      </div>
+
+      <div class="dssCompactBottom">
+        <span class="dssMiniLabel">Budget (15th)</span>
+        <span class="dssCompactBudget" id="stickyBud15">$0.00</span>
+      </div>
+    </div>
+
+    <div class="stickyZone3">
+      <div class="desktopTabRow">
+        <button id="desktopTabCkp" class="tabBtn active">CKP Pay</button>
+        <button id="desktopTabBudget" class="tabBtn">Budget</button>
+      </div>
+
       <div class="stickyHoursBox">
         <div class="stickyHoursLabel">Total Hours</div>
         <div id="topTotalHours" class="stickyHoursValue">0.00</div>
       </div>
     </div>
 
-    <div class="stickyRight">
+    <div class="stickyZone4">
       <div class="stickyControlsTop">
         <select id="monthSelect"></select>
         <span class="smallTag" id="cloudTag">Cloud: …</span>
@@ -1702,13 +1862,39 @@ $("cloudPullBtn").addEventListener("click", async ()=>{
     render();
   });
 
-  
+ function syncDesktopTabs(){
+  const a = $("tabCkp");
+  const b = $("tabBudget");
+  const da = $("desktopTabCkp");
+  const db = $("desktopTabBudget");
+  if(!a || !b || !da || !db) return;
+
+  da.className = a.className;
+  db.className = b.className;
+}
+
+const desktopTabCkp = $("desktopTabCkp");
+const desktopTabBudget = $("desktopTabBudget");
+
+if (desktopTabCkp && $("tabCkp")) {
+  desktopTabCkp.addEventListener("click", () => {
+    $("tabCkp").click();
+    setTimeout(syncDesktopTabs, 0);
+  });
+}
+
+if (desktopTabBudget && $("tabBudget")) {
+  desktopTabBudget.addEventListener("click", () => {
+    $("tabBudget").click();
+    setTimeout(syncDesktopTabs, 0);
+  });
+} 
 
   // Re-render any time budget.js tells us totals changed
 window.addEventListener("ckp-budget-updated", () => {
   render();
+  syncDesktopTabs();
 });
-
 })();
 
   </script>
