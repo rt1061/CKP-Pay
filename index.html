@@ -557,66 +557,75 @@ button.ok:hover{background:rgba(106,168,255,.32)}
 
 <header class="topbar"></header>
   <div class="desktopStickySummary">
+<div class="desktopStickySummary">
   <div class="desktopStickySummaryInner">
 
-    <div class="dssCompactCard">
-      <div class="dssCompactTitle">Advance</div>
+    <div class="stickyLeft">
+      <div class="dssCompactCard">
+        <div class="dssCompactTitle">Advance</div>
 
-      <div class="dssCompactMainRow">
-        <div>
-          <div class="dssMiniLabel">Net</div>
-          <div class="dssCompactNet" id="stickyAdvNet">$0.00</div>
+        <div class="dssCompactMainRow">
+          <div>
+            <div class="dssMiniLabel">Net</div>
+            <div class="dssCompactNet" id="stickyAdvNet">$0.00</div>
+          </div>
+          <div>
+            <div class="dssMiniLabel">Extra</div>
+            <div class="dssCompactExtra" id="stickyExtra1">$0.00</div>
+          </div>
         </div>
-        <div>
-          <div class="dssMiniLabel">Extra</div>
-          <div class="dssCompactExtra" id="stickyExtra1">$0.00</div>
+
+        <div class="dssCompactBottom">
+          <span class="dssMiniLabel">Budget (1st)</span>
+          <span class="dssCompactBudget" id="stickyBud1">$0.00</span>
         </div>
       </div>
 
-      <div class="dssCompactBottom">
-        <span class="dssMiniLabel">Budget (1st)</span>
-        <span class="dssCompactBudget" id="stickyBud1">$0.00</span>
+      <div class="dssCompactCard">
+        <div class="dssCompactTitle">True-Up</div>
+
+        <div class="dssCompactMainRow">
+          <div>
+            <div class="dssMiniLabel">Net</div>
+            <div class="dssCompactNet" id="stickyTrueNet">$0.00</div>
+          </div>
+          <div>
+            <div class="dssMiniLabel">Extra</div>
+            <div class="dssCompactExtra" id="stickyExtra15">$0.00</div>
+          </div>
+        </div>
+
+        <div class="dssCompactBottom">
+          <span class="dssMiniLabel">Budget (15th)</span>
+          <span class="dssCompactBudget" id="stickyBud15">$0.00</span>
+        </div>
       </div>
     </div>
 
-    <div class="dssCompactCard">
-      <div class="dssCompactTitle">True-Up</div>
-
-      <div class="dssCompactMainRow">
-        <div>
-          <div class="dssMiniLabel">Net</div>
-          <div class="dssCompactNet" id="stickyTrueNet">$0.00</div>
-        </div>
-        <div>
-          <div class="dssMiniLabel">Extra</div>
-          <div class="dssCompactExtra" id="stickyExtra15">$0.00</div>
-        </div>
-      </div>
-
-      <div class="dssCompactBottom">
-        <span class="dssMiniLabel">Budget (15th)</span>
-        <span class="dssCompactBudget" id="stickyBud15">$0.00</span>
+    <div class="stickyCenter">
+      <div class="stickyHoursBox">
+        <div class="stickyHoursLabel">Total Hours</div>
+        <div id="topTotalHours" class="stickyHoursValue">0.00</div>
       </div>
     </div>
-  <div class="desktopStickyControls">
-  <div class="monthBlock">
-  <div class="monthRow">
-    <select id="monthSelect"></select>
-    <span class="smallTag" id="cloudTag">Cloud: …</span>
-  </div>
-  <div class="hoursRow">
-    <span class="hoursLabel">Total Hours</span>
-    <span id="topTotalHours">0.00</span>
-  </div>
-</div>
-  <button id="cloudPullBtn" class="ok">Cloud Pull</button>
-  <button id="cloudPushBtn" class="ok">Cloud Push</button>
-  <button id="backupBtn">Backup JSON</button>
-  <button id="restoreBtn">Restore JSON</button>
-  <button id="exportBtn">Export CSV</button>
-  <button id="resetBtn" class="ghost">Reset month</button>
-  <input id="restoreFile" type="file" accept="application/json" style="display:none"/>
-</div>  
+
+    <div class="stickyRight">
+      <div class="stickyControlsTop">
+        <select id="monthSelect"></select>
+        <span class="smallTag" id="cloudTag">Cloud: …</span>
+      </div>
+
+      <div class="stickyControlsButtons">
+        <button id="cloudPullBtn" class="ok">Cloud Pull</button>
+        <button id="cloudPushBtn" class="ok">Cloud Push</button>
+        <button id="backupBtn">Backup JSON</button>
+        <button id="restoreBtn">Restore JSON</button>
+        <button id="exportBtn">Export CSV</button>
+        <button id="resetBtn" class="ghost">Reset month</button>
+        <input id="restoreFile" type="file" accept="application/json" style="display:none"/>
+      </div>
+    </div>
+
   </div>
 </div>
 
