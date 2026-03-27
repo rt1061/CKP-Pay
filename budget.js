@@ -20,6 +20,8 @@ function getBudgetTotals() {
 
 window.CKPBUDGET = window.CKPBUDGET || {};
 window.CKPBUDGET.getTotals = getBudgetTotals;
+window.CKPBUDGET.getBudgetForCloud = getBudgetForCloud;
+window.CKPBUDGET.setBudgetFromCloud = setBudgetFromCloud;
 window.dispatchEvent(new Event("ckp-budget-updated"));
 
 function parsePostDay(v) {
@@ -106,6 +108,14 @@ function loadBudget() {
 
 function saveBudget(data) {
   localStorage.setItem(BUDGET_STORAGE_KEY, JSON.stringify(data));
+
+  const pendingText = "Cloud: pending…";
+  window.dispatchEvent(new CustomEvent("ckp-cloud-status", { detail: { text: pendingText } }));
+
+  if (window.CKPCloud && typeof window.CKPCloud.schedulePush === "function") {
+    window.CKPCloud.schedulePush();
+  }
+
   window.dispatchEvent(new Event("ckp-budget-updated"));
 }
 
@@ -235,28 +245,33 @@ export function mountBudgetTab(rootEl) {
     const grand = total1 + total15;
 
     rootEl.innerHTML = `
-      <div class="budgetTop">
-        <div class="budgetTopLeft">
-          <div class="budgetTitle">Budget</div>
-          <div class="budgetSubtitle">Excel-like editing • Live totals • Instant delete</div>
+      <div class="budgetStickyHeader">
+        <div class="budgetStickyLeft">
+          <div class="budgetStickyTitle">Budget</div>
+          <div class="budgetStickySub">Excel-like editing • Live totals • Instant delete</div>
         </div>
 
-        <div class="budgetTopRight">
-          <div class="budgetGrand">
-            <div class="muted">Monthly total</div>
-            <div class="grandNum">${money(grand)}</div>
-          </div>
+        <div class="budgetStickyCenter">
+          <button id="budgetBackBtn" class="tabBtn">CKP Pay</button>
+        </div>
 
-          <div class="budgetToggles">
-            <label class="toggleRow">
-              <input type="checkbox" id="hideInactive" ${data.ui?.hideInactiveRows ? "checked" : ""}/>
-              <span>Hide inactive rows</span>
-            </label>
-            <label class="toggleRow">
-              <input type="checkbox" id="sortPost" ${data.ui?.sortByPostDay ? "checked" : ""}/>
-              <span>Sort by Post day</span>
-            </label>
-          </div>
+        <div class="budgetStickyRight">
+          <div class="budgetStickyTotalLabel">Monthly total</div>
+          <div class="grandNum">${money(grand)}</div>
+          <span class="smallTag budgetStickyStatus" id="budgetCloudTag">${escapeHtml(document.getElementById("cloudTag")?.textContent || "Cloud: ready")}</span>
+        </div>
+      </div>
+
+      <div class="budgetToolsRow">
+        <div class="budgetToggles">
+          <label class="toggleRow">
+            <input type="checkbox" id="hideInactive" ${data.ui?.hideInactiveRows ? "checked" : ""}/>
+            <span>Hide inactive rows</span>
+          </label>
+          <label class="toggleRow">
+            <input type="checkbox" id="sortPost" ${data.ui?.sortByPostDay ? "checked" : ""}/>
+            <span>Sort by Post day</span>
+          </label>
         </div>
       </div>
 
@@ -277,6 +292,19 @@ export function mountBudgetTab(rootEl) {
       saveBudget(data);
       rerender();
     });
+
+    rootEl.querySelector("#budgetBackBtn")?.addEventListener("click", () => {
+      document.getElementById("tabCkp")?.click();
+    });
+
+    if (rootEl._budgetCloudSyncHandler) {
+      window.removeEventListener("ckp-cloud-status", rootEl._budgetCloudSyncHandler);
+    }
+    rootEl._budgetCloudSyncHandler = (evt) => {
+      const el = rootEl.querySelector("#budgetCloudTag");
+      if (el) el.textContent = evt?.detail?.text || document.getElementById("cloudTag")?.textContent || "Cloud: ready";
+    };
+    window.addEventListener("ckp-cloud-status", rootEl._budgetCloudSyncHandler);
 
     renderTable(rootEl.querySelector("#budgetFirst"), "Transferred on 1st", "first", data, rerender);
     renderTable(rootEl.querySelector("#budgetFifteenth"), "Transferred on 15th", "fifteenth", data, rerender);
@@ -313,7 +341,7 @@ function wireBudgetTabs() {
   function showBudget() {
     if (ckpTopbar) ckpTopbar.style.display = "none";
     if (ckpMain) ckpMain.style.display = "none";
-    if (desktopSticky) desktopSticky.style.display = "";
+    if (desktopSticky) desktopSticky.style.display = "none";
     budgetRoot.style.display = "block";
     setActive("budget");
     mountBudgetTab(budgetRoot);
