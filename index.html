@@ -247,6 +247,60 @@ button.ok:hover{background:rgba(106,168,255,.32)}
   margin-bottom:14px;
 }
 
+.budgetStickyHeader{
+  position:sticky;
+  top:0;
+  z-index:45;
+  display:grid;
+  grid-template-columns:minmax(220px,1fr) auto minmax(220px,1fr);
+  align-items:center;
+  gap:14px;
+  padding:12px 16px;
+  margin-bottom:14px;
+  background:linear-gradient(180deg,#071226 0%, rgba(7,18,38,.97) 85%, rgba(7,18,38,.92) 100%);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(6px);
+}
+.budgetStickyLeft{
+  min-width:0;
+}
+.budgetStickyTitle{
+  font-size:18px;
+  font-weight:900;
+  line-height:1.1;
+}
+.budgetStickySub{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:4px;
+}
+.budgetStickyCenter{
+  display:flex;
+  justify-content:center;
+}
+.budgetStickyRight{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:6px;
+}
+.budgetStickyTotalLabel{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1;
+}
+.budgetStickyStatus{
+  white-space:nowrap;
+}
+.budgetToolsRow{
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:16px;
+  margin-bottom:14px;
+  flex-wrap:wrap;
+}
+
 .budgetTitle{
   font-size:18px;
   font-weight:900;
@@ -628,6 +682,25 @@ button.ok:hover{background:rgba(106,168,255,.32)}
     align-items:flex-start;
     gap:10px;
   }
+  .budgetStickyHeader{
+    position:sticky;
+    top:0;
+    grid-template-columns:1fr;
+    gap:10px;
+    padding:12px;
+    margin-bottom:12px;
+  }
+  .budgetStickyCenter{
+    justify-content:flex-start;
+  }
+  .budgetStickyRight{
+    align-items:flex-start;
+  }
+  .budgetToolsRow{
+    justify-content:flex-start;
+    gap:12px;
+    margin-bottom:12px;
+  }
   .budgetSubtitle{
     font-size:15px;
   }
@@ -1006,7 +1079,7 @@ button.ok:hover{background:rgba(106,168,255,.32)}
   <button id="tabCkp" class="tabBtn active">CKP Pay</button>
   <button id="tabBudget" class="tabBtn">Budget</button>
 </div>
-
+<div id="budgetRoot" style="display:none; padding:16px;"></div>
 
 <div class="mobileShell">
   <div class="mobileTopTabs">
@@ -1148,7 +1221,7 @@ button.ok:hover{background:rgba(106,168,255,.32)}
 
   </div>
 </div>
-<div id="budgetRoot" style="display:none; padding:16px;"></div>
+
 <main class="layout">
   <section class="left">
     <div class="monthTitle" id="monthTitle"></div>
@@ -1353,7 +1426,10 @@ button.ok:hover{background:rgba(106,168,255,.32)}
 const DEVICE_ID = "b08dfd93-c752-4ca6-bc1a-87792f114b53";
 
   const cloudTagEl = document.getElementById("cloudTag");
-  const setCloudTag = (t) => { if (cloudTagEl) cloudTagEl.textContent = t; };
+  const setCloudTag = (t) => {
+    if (cloudTagEl) cloudTagEl.textContent = t;
+    window.dispatchEvent(new CustomEvent("ckp-cloud-status", { detail: { text: t } }));
+  };
   setCloudTag(sb ? "Cloud: ready" : "Cloud: missing");
 
   async function cloudPushAll() {
@@ -1370,6 +1446,9 @@ const DEVICE_ID = "b08dfd93-c752-4ca6-bc1a-87792f114b53";
       const payload = {
         month: loadMonth(mk),
         settings: s,
+        budget: (window.CKPBUDGET && typeof window.CKPBUDGET.getBudgetForCloud === "function")
+          ? window.CKPBUDGET.getBudgetForCloud()
+          : null,
         _cloudTs: Date.now()
       };
 
@@ -1424,6 +1503,10 @@ const DEVICE_ID = "b08dfd93-c752-4ca6-bc1a-87792f114b53";
           saveSettings(remote.settings);
         }
 
+        if (remote.budget && window.CKPBUDGET && typeof window.CKPBUDGET.setBudgetFromCloud === "function") {
+          window.CKPBUDGET.setBudgetFromCloud(remote.budget);
+        }
+
         if (remote.month) {
           saveMonthLocalOnly(mk, remote.month);
         }
@@ -1467,10 +1550,17 @@ const DEVICE_ID = "b08dfd93-c752-4ca6-bc1a-87792f114b53";
 
 function scheduleCloudPush() {
   clearTimeout(cloudPushTimer);
+  setCloudTag("Cloud: pending…");
   cloudPushTimer = setTimeout(async () => {
     await cloudPushAll();
   }, 1500);
 }
+
+window.CKPCloud = {
+  schedulePush: scheduleCloudPush,
+  pushAll: cloudPushAll,
+  pullAll: cloudPullAll
+};
 
   const settingsKey = "ckp:settings:vFinal";
   const monthKey = k => `ckp:month:vFinal:${k}`;
@@ -2350,7 +2440,7 @@ if (desktopTabBudget) {
     const desktopSticky = document.querySelector(".desktopStickySummary");
 
     if (ckpMain) ckpMain.style.display = "none";
-   if (desktopSticky) desktopSticky.style.display = "";
+    if (desktopSticky) desktopSticky.style.display = "none";
 
     if (budgetRoot) {
       budgetRoot.style.display = "block";
