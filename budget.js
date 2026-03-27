@@ -312,40 +312,39 @@ export function setBudgetFromCloud(budgetObj) {
 // Auto-wire the CKP/Budget tabs
 // ==============================
 function wireBudgetTabs() {
-const tabCkp = document.getElementById("tabCkp");
-const tabBudget = document.getElementById("tabBudget");
-const ckpTopbar = document.querySelector("header.topbar");
-const ckpMain = document.querySelector("main.layout");
-const budgetRoot = document.getElementById("budgetRoot");
-const desktopSticky = document.querySelector(".desktopStickySummary");
+  const tabCkp = document.getElementById("tabCkp");
+  const tabBudget = document.getElementById("tabBudget");
+  const ckpTopbar = document.querySelector("header.topbar");
+  const ckpMain = document.querySelector("main.layout");
+  const budgetRoot = document.getElementById("budgetRoot");
+  const desktopSticky = document.querySelector(".desktopStickySummary");
 
-  if (!tabCkp || !tabBudget || !budgetRoot || !ckpTopbar || !ckpMain) return;
+  if (!tabCkp || !tabBudget || !budgetRoot || !ckpMain) return;
 
   function setActive(which) {
     tabCkp.classList.toggle("active", which === "ckp");
     tabBudget.classList.toggle("active", which === "budget");
   }
 
- tabBudget.addEventListener("click", () => {
-  ckpTopbar.style.display = "none";
-  ckpMain.style.display = "none";
-  budgetRoot.style.display = "block";
-  if (desktopSticky) desktopSticky.style.display = "none";
-  setActive("budget");
-  mountBudgetTab(budgetRoot);
-});
-
-    // Render budget UI
+  function showBudget() {
+    if (ckpTopbar) ckpTopbar.style.display = "none";
+    if (ckpMain) ckpMain.style.display = "none";
+    if (desktopSticky) desktopSticky.style.display = "none";
+    budgetRoot.style.display = "block";
+    setActive("budget");
     mountBudgetTab(budgetRoot);
-  });
+  }
 
-tabCkp.addEventListener("click", () => {
-  budgetRoot.style.display = "none";
-  ckpTopbar.style.display = "";
-  ckpMain.style.display = "";
-  if (desktopSticky) desktopSticky.style.display = "";
-  setActive("ckp");
-});
+  function showCkp() {
+    budgetRoot.style.display = "none";
+    if (ckpTopbar) ckpTopbar.style.display = "";
+    if (ckpMain) ckpMain.style.display = "";
+    if (desktopSticky) desktopSticky.style.display = "";
+    setActive("ckp");
+  }
+
+  tabBudget.addEventListener("click", showBudget);
+  tabCkp.addEventListener("click", showCkp);
 }
 
 if (document.readyState === "loading") {
