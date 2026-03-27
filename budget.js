@@ -313,7 +313,7 @@ function wireBudgetTabs() {
   function showBudget() {
     if (ckpTopbar) ckpTopbar.style.display = "none";
     if (ckpMain) ckpMain.style.display = "none";
-    if (desktopSticky) desktopSticky.style.display = "none";
+    if (desktopSticky) desktopSticky.style.display = "";
     budgetRoot.style.display = "block";
     setActive("budget");
     mountBudgetTab(budgetRoot);
