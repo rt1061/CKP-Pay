@@ -640,32 +640,31 @@ button.ok:hover{background:rgba(106,168,255,.32)}
     gap:14px;
   }
   .budgetTableWrap{
-    overflow-x:visible;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
   }
-  .budgetHead{
-    display:none;
-  }
-  .budgetRow{
-    min-width:0;
-    grid-template-columns:1.35fr 1fr .75fr;
-    grid-template-areas:
-      "expense to post"
-      "amount toggle delete";
-    gap:8px;
-    align-items:center;
-    padding:10px 0;
-  }
-  .budgetRow > *{
-    min-width:0;
-  }
-  .budgetRow > :nth-child(1){ grid-area:expense; }
-  .budgetRow > :nth-child(2){ grid-area:to; }
-  .budgetRow > :nth-child(3){ grid-area:post; }
-  .budgetRow > :nth-child(4){ grid-area:amount; }
-  .budgetRow > :nth-child(5){ grid-area:toggle; }
-  .budgetRow > :nth-child(6){ grid-area:delete; }
 
-  .inText,.inMoney,.btnToggle,.btnDanger,.btnSmall{
+  .budgetHead{
+    display:grid;
+  }
+
+  .budgetHead,
+  .budgetRow{
+    min-width:720px;
+  }
+
+  .budgetRow{
+    grid-template-columns:1.6fr 1fr .8fr .9fr .7fr .55fr;
+    gap:10px;
+    align-items:center;
+    padding:10px 6px;
+  }
+
+  .inText,
+  .inMoney,
+  .btnToggle,
+  .btnDanger,
+  .btnSmall{
     min-height:48px;
     font-size:16px;
   }
