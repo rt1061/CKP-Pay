@@ -152,8 +152,8 @@ function renderTable(container, title, listKey, data, onChange) {
         </div>
       </div>
 
-      <div class="budgetTableWrap">
-        <div class="budgetRow budgetHead">
+      <div class="budgetTableWrap" style="overflow-x:auto;">
+        <div class="budgetRow budgetHead" style="min-width:720px;">
           <div>Expense</div>
           <div>To</div>
           <div>Post</div>
@@ -163,7 +163,7 @@ function renderTable(container, title, listKey, data, onChange) {
         </div>
 
         ${visible.map(row => `
-          <div class="budgetRow ${row.active ? "" : "inactiveRow"}" data-id="${row.id}">
+          <div class="budgetRow ${row.active ? "" : "inactiveRow"}" data-id="${row.id}" style="min-width:720px;">
             <div><input class="inText" data-field="expense" value="${escapeHtml(row.expense ?? "")}"/></div>
             <div><input class="inText" data-field="to" value="${escapeHtml(row.to ?? "")}"/></div>
             <div><input class="inText" data-field="post" value="${escapeHtml(row.post ?? "")}"/></div>
