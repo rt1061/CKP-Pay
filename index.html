@@ -406,58 +406,7 @@ button.ok:hover{background:rgba(106,168,255,.32)}
   display:none;
 }
 
-@media (max-width: 1180px){
-  .tabBar{
-    display:none;
-      .budgetTableWrap{
-    overflow-x:auto;
-  }
-
-  .budgetRow{
-    min-width:640px;
-    grid-template-columns:140px 110px 70px 1fr 70px 70px;
-  }
-
-  .budgetHead{
-    min-width:640px;
-  }
-  }
-
-  .mobileBottomNav{
-    position:fixed;
-    left:0;
-    right:0;
-    bottom:0;
-    z-index:60;
-    display:flex;
-    justify-content:space-around;
-    align-items:center;
-    gap:8px;
-    padding:10px 12px calc(10px + env(safe-area-inset-bottom));
-    background:#081223;
-    border-top:1px solid rgba(255,255,255,.08);
-  }
-
-  .mobileNavBtn{
-    flex:1;
-    padding:10px 12px;
-    border-radius:12px;
-    border:1px solid rgba(255,255,255,.10);
-    background:rgba(255,255,255,.08);
-    color:var(--text);
-    font-weight:800;
-  }
-
-  .mobileNavBtn.active{
-    background:rgba(106,168,255,.20);
-    border-color:rgba(106,168,255,.35);
-  }
-
-  body{
-    padding-bottom:84px;
-  }
-}
-  @media (min-width: 1181px){
+@media (min-width: 1181px){
   .tabBar{
     display:none;
   }
@@ -1009,12 +958,6 @@ button.ok:hover{background:rgba(106,168,255,.32)}
   </aside>
 </main>
 
-<div class="mobileBottomNav">
-  <button id="mobileNavPay" class="mobileNavBtn active">Pay</button>
-  <button id="mobileNavBudget" class="mobileNavBtn">Budget</button>
-  <button id="mobileNavSettings" class="mobileNavBtn">Settings</button>
-</div>
-  
   <script type="module" src="budget.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -1946,53 +1889,11 @@ if (desktopTabBudget && $("tabBudget")) {
     $("tabBudget").click();
     setTimeout(syncDesktopTabs, 0);
   });
-} 
-
-  // Re-render any time budget.js tells us totals changed
-const mobileNavPay = $("mobileNavPay");
-const mobileNavBudget = $("mobileNavBudget");
-const mobileNavSettings = $("mobileNavSettings");
-
-function syncMobileNav(){
-  if (!mobileNavPay || !mobileNavBudget) return;
-  mobileNavPay.classList.toggle("active", $("tabCkp")?.classList.contains("active"));
-  mobileNavBudget.classList.toggle("active", $("tabBudget")?.classList.contains("active"));
 }
 
-if (mobileNavPay && $("tabCkp")) {
-  mobileNavPay.addEventListener("click", () => {
-    $("tabCkp").click();
-    setTimeout(syncMobileNav, 0);
-  });
-}
-
-if (mobileNavBudget && $("tabBudget")) {
-  mobileNavBudget.addEventListener("click", () => {
-    $("tabBudget").click();
-    setTimeout(syncMobileNav, 0);
-  });
-}
-
-if (mobileNavSettings) {
-  mobileNavSettings.addEventListener("click", () => {
-    if ($("tabCkp")) $("tabCkp").click();
-
-    setTimeout(() => {
-      const settingsEl = document.querySelector("details.settings");
-      if (settingsEl) {
-        settingsEl.open = true;
-        settingsEl.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-      syncMobileNav();
-    }, 150);
-  });
-}
-
-syncMobileNav();
-  window.addEventListener("ckp-budget-updated", () => {
+window.addEventListener("ckp-budget-updated", () => {
   render();
   syncDesktopTabs();
-  syncMobileNav();
 });
 })();
 
