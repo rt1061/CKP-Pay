@@ -406,6 +406,295 @@ button.ok:hover{background:rgba(106,168,255,.32)}
   display:none;
 }
 
+
+/* =========================
+   MOBILE APP SHELL
+========================= */
+.tabBtn{
+  padding:10px 16px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.08);
+  color:var(--text);
+  font-weight:800;
+}
+.tabBtn.active{
+  background:rgba(106,168,255,.20);
+  border-color:rgba(106,168,255,.35);
+}
+
+.mobileShell,
+.mobileBottomNav{
+  display:none;
+}
+
+@media (max-width: 1180px){
+  .desktopStickySummary{ display:none !important; }
+  .topbar{ display:none !important; }
+  .tabBar{ display:none !important; }
+
+  .mobileShell{
+    display:block;
+    padding:12px 12px 0 12px;
+  }
+
+  .mobileTopTabs{
+    display:flex;
+    gap:8px;
+    justify-content:center;
+    margin-bottom:12px;
+  }
+  .mobileTabBtn{
+    flex:1;
+    max-width:180px;
+    padding:12px 16px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.10);
+    background:rgba(255,255,255,.08);
+    color:var(--text);
+    font-weight:800;
+  }
+  .mobileTabBtn.active{
+    background:rgba(106,168,255,.20);
+    border-color:rgba(106,168,255,.35);
+  }
+
+  .mobilePaySticky{
+    position:sticky;
+    top:10px;
+    z-index:40;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    padding-bottom:12px;
+    background:linear-gradient(180deg,#071226 0%, rgba(7,18,38,.96) 80%, rgba(7,18,38,0) 100%);
+    backdrop-filter: blur(2px);
+  }
+
+  .mobileSummaryCard{
+    background:linear-gradient(145deg,#0e1624,#0b1320);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:22px;
+    padding:16px 16px 14px 16px;
+    box-shadow:0 10px 28px rgba(0,0,0,.35);
+  }
+  .mobileSummaryHead{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .mobileSummaryTitle{
+    font-size:18px;
+    font-weight:900;
+    color:#dbe6ff;
+  }
+  .mobileMonthSelect{
+    min-width:144px;
+    padding:8px 12px;
+    border-radius:14px;
+    background:rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.12);
+    color:var(--text);
+  }
+  .mobileSummaryMain{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    align-items:end;
+  }
+  .mobileMiniLabel{
+    font-size:12px;
+    font-weight:700;
+    color:var(--muted);
+    margin-bottom:4px;
+  }
+  .mobileBigNet{
+    font-size:28px;
+    font-weight:950;
+    line-height:1.02;
+    color:var(--gold);
+    font-variant-numeric:tabular-nums;
+  }
+  .mobileBigExtra{
+    font-size:28px;
+    font-weight:950;
+    line-height:1.02;
+    color:#7fe1a8;
+    font-variant-numeric:tabular-nums;
+    text-align:right;
+  }
+  .mobileSummaryBottom{
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px solid rgba(255,255,255,.08);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .mobileBudgetLabel{
+    color:var(--muted);
+    font-size:14px;
+    font-weight:800;
+  }
+  .mobileBudgetVal{
+    color:#cdd9ff;
+    font-size:18px;
+    font-weight:900;
+    font-variant-numeric:tabular-nums;
+  }
+
+  .mobileActionWrap{
+    padding:0 0 12px 0;
+  }
+  .mobileMonthHeading{
+    font-size:20px;
+    font-weight:900;
+    margin:0 0 10px 4px;
+  }
+  .mobileActionGrid{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:10px;
+  }
+  .mobileActionBtn{
+    padding:12px 10px;
+    border-radius:16px;
+    font-weight:800;
+  }
+
+  .layout{
+    grid-template-columns:1fr !important;
+    gap:12px;
+    padding:0 12px 96px 12px;
+  }
+  .right{
+    display:none;
+  }
+
+  body.mobile-view-pay #budgetRoot{
+    display:none !important;
+  }
+  body.mobile-view-pay .layout{
+    display:grid !important;
+  }
+  body.mobile-view-pay .left{
+    display:block;
+  }
+  body.mobile-view-pay .right{
+    display:none !important;
+  }
+
+  body.mobile-view-budget .layout{
+    display:none !important;
+  }
+  body.mobile-view-budget #budgetRoot{
+    display:block !important;
+    padding:12px 12px 96px 12px !important;
+  }
+  body.mobile-view-budget .mobilePaySticky,
+  body.mobile-view-budget .mobileActionWrap{
+    display:none !important;
+  }
+
+  body.mobile-view-settings .layout{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+  }
+  body.mobile-view-settings .left{
+    display:none !important;
+  }
+  body.mobile-view-settings .right{
+    display:block !important;
+    order:0 !important;
+    padding-bottom:96px;
+  }
+  body.mobile-view-settings #budgetRoot{
+    display:none !important;
+  }
+  body.mobile-view-settings .mobileTopTabs,
+  body.mobile-view-settings .mobilePaySticky,
+  body.mobile-view-settings .mobileActionWrap{
+    display:none !important;
+  }
+
+  .budgetRoot{
+    padding:12px 12px 96px 12px !important;
+  }
+  .budgetTop{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+  }
+  .budgetSubtitle{
+    font-size:15px;
+  }
+  .budgetToggles{
+    justify-content:flex-start;
+    gap:12px;
+  }
+  .budgetGrid{
+    grid-template-columns:1fr !important;
+    gap:14px;
+  }
+  .budgetTableWrap{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  .budgetHead,
+  .budgetRow{
+    min-width:720px;
+  }
+  .budgetRow{
+    grid-template-columns:180px 110px 72px minmax(180px,1fr) 86px 86px;
+  }
+  .inText,.inMoney,.btnToggle,.btnDanger,.btnSmall{
+    min-height:48px;
+    font-size:16px;
+  }
+
+  .mobileBottomNav{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:60;
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:10px;
+    padding:12px 12px calc(12px + env(safe-area-inset-bottom));
+    background:#081223;
+    border-top:1px solid rgba(255,255,255,.08);
+  }
+  .mobileBottomBtn{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    padding:10px 8px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.10);
+    background:rgba(255,255,255,.08);
+    color:var(--text);
+    font-weight:800;
+  }
+  .mobileBottomBtn.active{
+    background:rgba(106,168,255,.20);
+    border-color:rgba(106,168,255,.35);
+  }
+  .mobileBottomIcon{
+    font-size:18px;
+    line-height:1;
+  }
+  .mobileBottomText{
+    font-size:12px;
+    line-height:1.1;
+  }
+}
+
 @media (min-width: 1181px){
   .tabBar{
     display:none;
@@ -465,7 +754,7 @@ button.ok:hover{background:rgba(106,168,255,.32)}
   }
 
   .dssCompactNet{
-    font-size:24px;
+    font-size:36px;
     font-weight:950;
     color:var(--gold);
     font-variant-numeric:tabular-nums;
@@ -473,7 +762,7 @@ button.ok:hover{background:rgba(106,168,255,.32)}
   }
 
   .dssCompactExtra{
-    font-size:24px;
+    font-size:36px;
     font-weight:950;
     font-variant-numeric:tabular-nums;
     line-height:1;
@@ -666,7 +955,7 @@ button.ok:hover{background:rgba(106,168,255,.32)}
   }
 
   .dssCompactNet{
-    font-size:24px;
+    font-size:26px;
     font-weight:950;
     color:var(--gold);
     font-variant-numeric:tabular-nums;
@@ -674,7 +963,7 @@ button.ok:hover{background:rgba(106,168,255,.32)}
   }
 
   .dssCompactExtra{
-    font-size:24px;
+    font-size:26px;
     font-weight:950;
     font-variant-numeric:tabular-nums;
     line-height:1.05;
@@ -711,6 +1000,70 @@ button.ok:hover{background:rgba(106,168,255,.32)}
   <button id="tabBudget" class="tabBtn">Budget</button>
 </div>
 <div id="budgetRoot" style="display:none; padding:16px;"></div>
+
+<div class="mobileShell">
+  <div class="mobileTopTabs">
+    <button id="mobileTopPay" class="mobileTabBtn active">CKP Pay</button>
+    <button id="mobileTopBudget" class="mobileTabBtn">Budget</button>
+  </div>
+
+  <div class="mobilePaySticky">
+    <div class="mobileSummaryCard">
+      <div class="mobileSummaryHead">
+        <div class="mobileSummaryTitle">Advance</div>
+        <select id="mobileMonthSelect" class="mobileMonthSelect"></select>
+      </div>
+      <div class="mobileSummaryMain">
+        <div>
+          <div class="mobileMiniLabel">Net</div>
+          <div id="mAdvNet" class="mobileBigNet">$0.00</div>
+        </div>
+        <div>
+          <div class="mobileMiniLabel">Extra</div>
+          <div id="mExtra1" class="mobileBigExtra">$0.00</div>
+        </div>
+      </div>
+      <div class="mobileSummaryBottom">
+        <div class="mobileBudgetLabel">Budget (1st)</div>
+        <div id="mBud1" class="mobileBudgetVal">$0.00</div>
+      </div>
+    </div>
+
+    <div class="mobileSummaryCard">
+      <div class="mobileSummaryHead">
+        <div class="mobileSummaryTitle">True-Up</div>
+      </div>
+      <div class="mobileSummaryMain">
+        <div>
+          <div class="mobileMiniLabel">Net</div>
+          <div id="mTrueNet" class="mobileBigNet">$0.00</div>
+        </div>
+        <div>
+          <div class="mobileMiniLabel">Extra</div>
+          <div id="mExtra15" class="mobileBigExtra">$0.00</div>
+        </div>
+      </div>
+      <div class="mobileSummaryBottom">
+        <div class="mobileBudgetLabel">Budget (15th)</div>
+        <div id="mBud15" class="mobileBudgetVal">$0.00</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mobileActionWrap">
+    <div id="mobileMonthLabel" class="mobileMonthHeading">Month</div>
+    <div class="mobileActionGrid">
+      <button id="mCloudPull" class="mobileActionBtn ok">Cloud Pull</button>
+      <button id="mCloudPush" class="mobileActionBtn ok">Cloud Push</button>
+      <button id="mReset" class="mobileActionBtn ghost">Reset month</button>
+      <button id="mBackup" class="mobileActionBtn">Backup JSON</button>
+      <button id="mRestore" class="mobileActionBtn">Restore JSON</button>
+      <button id="mExport" class="mobileActionBtn">Export CSV</button>
+    </div>
+  </div>
+</div>
+
+
 <!-- everything else that was already there stays below -->
 
 <header class="topbar"></header>
@@ -957,6 +1310,22 @@ button.ok:hover{background:rgba(106,168,255,.32)}
     </div>
   </aside>
 </main>
+
+
+<div class="mobileBottomNav">
+  <button id="mobileNavPay" class="mobileBottomBtn active">
+    <span class="mobileBottomIcon">▤</span>
+    <span class="mobileBottomText">Pay</span>
+  </button>
+  <button id="mobileNavBudget" class="mobileBottomBtn">
+    <span class="mobileBottomIcon">▤</span>
+    <span class="mobileBottomText">Budget</span>
+  </button>
+  <button id="mobileNavSettings" class="mobileBottomBtn">
+    <span class="mobileBottomIcon">⚙︎</span>
+    <span class="mobileBottomText">Settings</span>
+  </button>
+</div>
 
   <script type="module" src="budget.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1459,6 +1828,12 @@ setTxt("stickyTrueNet", trueNet);
 setTxt("stickyExtra15", extra15);
 setTxt("stickyBud1", bt.total1);
 setTxt("stickyBud15", bt.total15);
+setTxt("mAdvNet", advNet);
+setTxt("mExtra1", extra1);
+setTxt("mTrueNet", trueNet);
+setTxt("mExtra15", extra15);
+setTxt("mBud1", bt.total1);
+setTxt("mBud15", bt.total15);
 const stickyExtra1El = $("stickyExtra1");
 if (stickyExtra1El) {
   stickyExtra1El.style.color = extra1 >= 0 ? "#57d38c" : "#ff6b6b";
@@ -1528,6 +1903,10 @@ function render(){
 
   const key=monthSelect.value;
   $("monthTitle").textContent=labelFor(key);
+  const mobileMonthLabel = $("mobileMonthLabel");
+  if (mobileMonthLabel) mobileMonthLabel.textContent = labelFor(key);
+  const mobileMonthSelect = $("mobileMonthSelect");
+  if (mobileMonthSelect) mobileMonthSelect.value = key;
 
   const md=loadMonth(key);
   shfsSelect.value=md.shfs;
@@ -1680,6 +2059,7 @@ if (topTotal) topTotal.textContent = fmt2(totTotal);
 scheduleCloudPush();
 if(key==="contractYear"){
         initMonths(s.contractYear);
+        if ($("mobileMonthSelect")) $("mobileMonthSelect").innerHTML = monthSelect.innerHTML;
         monthSelect.value=keyFor(s.contractYear,1);
       }
       render();
@@ -1749,6 +2129,8 @@ if(key==="contractYear"){
   // INIT
   const s0 = loadSettings();
 initMonths(s0.contractYear);
+const mobileMonthSelectEl = $("mobileMonthSelect");
+if (mobileMonthSelectEl) mobileMonthSelectEl.innerHTML = monthSelect.innerHTML;
 
 const savedMonth = localStorage.getItem(lastMonthKey);
 const defaultMonth = keyFor(s0.contractYear, 1);
@@ -1770,6 +2152,7 @@ monthSelect.addEventListener("change",()=>{
 
   const sAfterPull = loadSettings();
   initMonths(sAfterPull.contractYear);
+  if ($("mobileMonthSelect")) $("mobileMonthSelect").innerHTML = monthSelect.innerHTML;
 
   if (monthBeforePull && monthBeforePull.startsWith(`${sAfterPull.contractYear}-`)) {
     monthSelect.value = monthBeforePull;
@@ -1863,6 +2246,68 @@ $("cloudPullBtn").addEventListener("click", async ()=>{
     render();
   });
 
+  // Mobile-only UI state
+  const mobileTopPay = $("mobileTopPay");
+  const mobileTopBudget = $("mobileTopBudget");
+  const mobileNavPay = $("mobileNavPay");
+  const mobileNavBudget = $("mobileNavBudget");
+  const mobileNavSettings = $("mobileNavSettings");
+  const mobileMonthSelect = $("mobileMonthSelect");
+
+  function setMobileView(view){
+    document.body.classList.remove("mobile-view-pay","mobile-view-budget","mobile-view-settings");
+    document.body.classList.add(`mobile-view-${view}`);
+
+    if (mobileTopPay) mobileTopPay.classList.toggle("active", view === "pay");
+    if (mobileTopBudget) mobileTopBudget.classList.toggle("active", view === "budget");
+    if (mobileNavPay) mobileNavPay.classList.toggle("active", view === "pay");
+    if (mobileNavBudget) mobileNavBudget.classList.toggle("active", view === "budget");
+    if (mobileNavSettings) mobileNavSettings.classList.toggle("active", view === "settings");
+  }
+
+  function mobileShowPay(){
+    if ($("tabCkp")) $("tabCkp").click();
+    setMobileView("pay");
+  }
+  function mobileShowBudget(){
+    if ($("tabBudget")) $("tabBudget").click();
+    setMobileView("budget");
+  }
+  function mobileShowSettings(){
+    if ($("tabCkp")) $("tabCkp").click();
+    setMobileView("settings");
+    setTimeout(() => {
+      const settingsEl = document.querySelector("details.settings");
+      if (settingsEl) {
+        settingsEl.open = true;
+        settingsEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 80);
+  }
+
+  mobileTopPay?.addEventListener("click", mobileShowPay);
+  mobileTopBudget?.addEventListener("click", mobileShowBudget);
+  mobileNavPay?.addEventListener("click", mobileShowPay);
+  mobileNavBudget?.addEventListener("click", mobileShowBudget);
+  mobileNavSettings?.addEventListener("click", mobileShowSettings);
+
+  mobileMonthSelect?.addEventListener("change", ()=>{
+    monthSelect.value = mobileMonthSelect.value;
+    localStorage.setItem(lastMonthKey, monthSelect.value);
+    render();
+  });
+
+  $("mCloudPull")?.addEventListener("click", async ()=>{ const changed = await cloudPullAll(); if(changed) render(); });
+  $("mCloudPush")?.addEventListener("click", ()=> cloudPushAll());
+  $("mReset")?.addEventListener("click", ()=>{ localStorage.removeItem(monthKey(monthSelect.value)); render(); scheduleCloudPush(); });
+  $("mBackup")?.addEventListener("click", doBackup);
+  $("mRestore")?.addEventListener("click", ()=> $("restoreFile").click());
+  $("mExport")?.addEventListener("click", exportCSV);
+
+  if (window.innerWidth <= 1180) {
+    setMobileView("pay");
+  }
+
  function syncDesktopTabs(){
   const a = $("tabCkp");
   const b = $("tabBudget");
@@ -1894,6 +2339,8 @@ if (desktopTabBudget && $("tabBudget")) {
 window.addEventListener("ckp-budget-updated", () => {
   render();
   syncDesktopTabs();
+  if (document.body.classList.contains("mobile-view-budget")) setMobileView("budget");
+  if (document.body.classList.contains("mobile-view-pay")) setMobileView("pay");
 });
 })();
 
