@@ -143,10 +143,32 @@ function renderTable(container, title, listKey, data, onChange) {
 
   const total = sumActive(items);
 
+    const scheelsTotal = items
+    .filter(x => x.active && String(x.to || "").trim().toLowerCase() === "scheels")
+    .reduce((acc, x) => acc + Number(x.amount || 0), 0);
+
+  const billPayTotal = items
+    .filter(x => x.active && String(x.to || "").trim().toLowerCase() === "bill pay")
+    .reduce((acc, x) => acc + Number(x.amount || 0), 0);
+
   container.innerHTML = `
     <div class="budgetCard">
-      <div class="budgetCardHeader">
-        <div class="budgetCardTitle">${title}</div>
+            <div class="budgetCardHeader">
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div class="budgetCardTitle">${title}</div>
+
+          <div style="display:flex; gap:18px; flex-wrap:wrap; font-size:13px; color:rgba(255,255,255,.88);">
+            <div>
+              <span style="color:var(--muted); margin-right:6px;">Scheels</span>
+              <strong style="color:var(--gold);">${money(scheelsTotal)}</strong>
+            </div>
+            <div>
+              <span style="color:var(--muted); margin-right:6px;">Bill Pay</span>
+              <strong style="color:var(--gold);">${money(billPayTotal)}</strong>
+            </div>
+          </div>
+        </div>
+
         <div class="budgetCardActions">
           <button class="btnSmall" data-action="add">+ Add item</button>
         </div>
