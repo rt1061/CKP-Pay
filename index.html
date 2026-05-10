@@ -53,7 +53,7 @@ button.ghost{background:rgba(255,255,255,.08)}button.ghost:hover{background:rgba
     0 0 0 1px rgba(255,255,255,.04),
     0 15px 35px rgba(0,0,0,.55);
 }
-.grid{display:grid;grid-template-columns:70px 160px 105px 165px 105px 110px 110px 110px;align-items:center}
+.grid{display:grid;grid-template-columns:70px 160px 105px 165px 105px 110px 110px 110px 110px;align-items:center}
 .header{
   background:rgba(0,0,0,.32);
   font-size:14px;
@@ -1228,8 +1228,8 @@ button.ok:hover{background:rgba(106,168,255,.32)}
     <div class="tableWrap">
       <div class="grid header">
         <div>Date</div><div>Code</div><div>Count</div>
-        <div>Base (hh:mm)</div><div>Base (dec)</div>
-        <div>+2.5</div><div>Override</div><div>Total</div>
+<div>Base (hh:mm)</div><div>Base (dec)</div>
+<div>+2.5</div><div>Holiday</div><div>Override</div><div>Total</div>
       </div>
       <div id="rows"></div>
       <div class="grid footer">
@@ -1238,8 +1238,9 @@ button.ok:hover{background:rgba(106,168,255,.32)}
         <div class="muted num">—</div>
         <div class="num" id="totBase">0.00</div>
         <div class="num" id="totOT">0.00</div>
-        <div class="num" id="totOV">0.00</div>
-        <div class="num" id="totTotal">0.00</div>
+<div class="num" id="totHoliday">0.00</div>
+<div class="num" id="totOV">0.00</div>
+<div class="num" id="totTotal">0.00</div>
       </div>
     </div>
 
@@ -1301,6 +1302,7 @@ button.ok:hover{background:rgba(106,168,255,.32)}
         <div class="sumRow"><div>Pilots Regular Pay</div><div class="num" id="sumRegular">0.00</div></div>
         <div class="sumRow"><div>CKP Day Adjustment</div><div class="num" id="sumDayAdj">0.00</div></div>
         <div class="sumRow"><div>CKP Add'l Day Premium (2.5)</div><div class="num" id="sumAddl">0.00</div></div>
+        <div class="sumRow"><div>Holiday Pay</div><div class="num" id="sumHoliday">0.00</div></div>
         <div class="sumRow"><div>CKP Duties (Override)</div><div class="num" id="sumOverride">0.00</div></div>
         <div class="sumRow indent"><div><i>Prem on OT</i></div><div class="num" id="sumPremOT">0.00</div></div>
         <div class="divider"></div>
@@ -1675,28 +1677,83 @@ function saveMonthLocalOnly(k, d) {
     return DEFAULTS.noOverrideCodes.includes(c);
   }
 
-  function computeRows(rows, s, md){
-    const isLR = md.lineRotation==="Yes";
-    const ovrPct = isLR ? s.lrOvr : s.ovpct;
-    let count=0;
-    return rows.map(r=>{
-      const baseDec=parseHours(r.base);
-      const code=(r.code||"").trim();
-      const counted = isCountDay(code, baseDec);
-      if(counted) count++;
+function nthWeekdayOfMonth(year, monthIndex, weekday, n){
+  const d = new Date(year, monthIndex, 1);
+  const offset = (weekday - d.getDay() + 7) % 7;
+  return 1 + offset + (n - 1) * 7;
+}
 
-      const baseHrs=baseHoursFor(code, baseDec, s);
-      // OT premium (+2.5) does NOT apply during Line Rotation months
-const add25 = (!isLR && count > s.otAfterDay && baseHrs > 0 && !DEFAULTS.noCountCodes.includes(code))
-  ? s.otPremHours
+function lastWeekdayOfMonth(year, monthIndex, weekday){
+  const d = new Date(year, monthIndex + 1, 0);
+  const offset = (d.getDay() - weekday + 7) % 7;
+  return d.getDate() - offset;
+}
+
+function thanksgivingDay(year){
+  return nthWeekdayOfMonth(year, 10, 4, 4); // Nov, Thursday, 4th
+}
+
+function isHolidayPayDate(monthKeyValue, day){
+  const [year, month] = monthKeyValue.split("-").map(Number);
+
+  if (month === 1 && day === 1) return true;   // New Year's Day
+  if (month === 5 && day === lastWeekdayOfMonth(year, 4, 1)) return true; // Memorial Day
+  if (month === 7 && day === 4) return true;   // Independence Day
+
+  const tg = thanksgivingDay(year);
+  if (month === 11 && day === tg - 1) return true; // Wed before Thanksgiving
+  if (month === 11 && day === tg) return true;     // Thanksgiving
+  if (month === 11 && day === tg + 3) return true; // Sunday after Thanksgiving
+
+  if (month === 12 && day === 24) return true; // Christmas Eve
+  if (month === 12 && day === 25) return true; // Christmas Day
+  if (month === 12 && day === 31) return true; // New Year's Eve
+
+  return false;
+}
+
+function holidayEligible(code, baseHrs){
+  const c = (code || "").trim();
+
+  if (baseHrs <= 0) return false;
+  if (["Vacation", "Sick", "WDAY", "Stan Meeting", "WKCXLD"].includes(c)) return false;
+
+  return true;
+}
+
+function computeRows(rows, s, md, activeMonthKey = monthSelect.value){
+  const isLR = md.lineRotation==="Yes";
+  const ovrPct = isLR ? s.lrOvr : s.ovpct;
+  const HOLIDAY_PAY_HOURS = 5.25;
+
+  let count=0;
+
+  return rows.map(r=>{
+    const baseDec=parseHours(r.base);
+    const code=(r.code||"").trim();
+    const counted = isCountDay(code, baseDec);
+    if(counted) count++;
+
+    const baseHrs=baseHoursFor(code, baseDec, s);
+
+    const add25 = (!isLR && count > s.otAfterDay && baseHrs > 0 && !DEFAULTS.noCountCodes.includes(code))
+      ? s.otPremHours
+      : 0;
+
+    const holidayPay = (isHolidayPayDate(activeMonthKey, r.day) && holidayEligible(code, baseHrs))
+      ? HOLIDAY_PAY_HOURS
+      : 0;
+
+    const ov = (!overrideBlocked(code) && baseHrs>0)
+  ? (baseHrs + holidayPay)*ovrPct
   : 0;
+    const premOT = add25*ovrPct;
 
-      const ov = (!overrideBlocked(code) && baseHrs>0) ? baseHrs*ovrPct : 0;
-      const premOT = add25*ovrPct;
-      const total = baseHrs + add25 + ov + premOT;
-      return {...r, baseDec, baseHrs, add25, ov, premOT, total, count: counted ? 1 : 0};
-    });
-  }
+    const total = baseHrs + add25 + holidayPay + ov + premOT;
+
+    return {...r, baseDec, baseHrs, add25, holidayPay, ov, premOT, total, count: counted ? 1 : 0};
+  });
+}
 
   const max0=x=>Math.max(0,x);
   const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
@@ -1780,7 +1837,7 @@ const [year, monthNum] = currentKey.split("-").map(Number);
 for (let m = 1; m < monthNum; m++) {
   const mk = keyFor(year, m);
   const prevMonth = loadMonth(mk);
-  const computedPrev = computeRows(prevMonth.rows, s, prevMonth);
+  const computedPrev = computeRows(prevMonth.rows, s, prevMonth, mk);
   const totalPrev = computedPrev.reduce((a, r) => a + r.total, 0);
 
   const prevFinance = computeFinanceSingleMonth(s, prevMonth, totalPrev);
@@ -1840,7 +1897,7 @@ for (let m = 1; m < monthNum; m++) {
 for (let m = 1; m < monthNum; m++) {
   const mk = keyFor(year, m);
   const prevMonth = loadMonth(mk);
-  const computedPrev = computeRows(prevMonth.rows, s, prevMonth);
+  const computedPrev = computeRows(prevMonth.rows, s, prevMonth, mk);
   const totalPrev = computedPrev.reduce((a, r) => a + r.total, 0);
 
   const pf = computeFinanceSingleMonth(s, prevMonth, totalPrev);
@@ -1863,7 +1920,7 @@ for (let m = 1; m < monthNum; m++) {
 for (let m = 1; m < monthNum; m++) {
   const mk = keyFor(year, m);
   const prevMonth = loadMonth(mk);
-  const computedPrev = computeRows(prevMonth.rows, s, prevMonth);
+  const computedPrev = computeRows(prevMonth.rows, s, prevMonth, mk);
   const totalPrev = computedPrev.reduce((a, r) => a + r.total, 0);
 
   const prevFinance = computeFinanceSingleMonth(s, prevMonth, totalPrev);
@@ -2030,8 +2087,9 @@ function render(){
       </div>
       <div class="cell num">${fmt2(r.baseDec)}</div>
       <div class="cell num">${fmt2(r.add25)}</div>
-      <div class="cell num">${fmt2(r.ov)}</div>
-      <div class="cell num">${fmt2(r.total)}</div>
+      <div class="cell num">${fmt2(r.holidayPay)}</div>
+<div class="cell num">${fmt2(r.ov)}</div>
+<div class="cell num">${fmt2(r.total)}</div>
     </div>
   `).join("");
 
@@ -2122,24 +2180,26 @@ scheduleCloudPush();
   });
 });
 
-
-  const totDays = computed.reduce((a,r)=>a+r.count,0);
-  const totBase = computed.reduce((a,r)=>a+r.baseHrs,0);
-  const totOT   = computed.reduce((a,r)=>a+r.add25,0);
-  const totOV   = computed.reduce((a,r)=>a+r.ov,0);
-  const totPremOT = computed.reduce((a,r)=>a+r.premOT,0);
-  const totTotal= computed.reduce((a,r)=>a+r.total,0);
+const totDays = computed.reduce((a,r)=>a+r.count,0);
+const totBase = computed.reduce((a,r)=>a+r.baseHrs,0);
+const totOT   = computed.reduce((a,r)=>a+r.add25,0);
+const totHoliday = computed.reduce((a,r)=>a+r.holidayPay,0);
+const totOV   = computed.reduce((a,r)=>a+r.ov,0);
+const totPremOT = computed.reduce((a,r)=>a+r.premOT,0);
+const totTotal= computed.reduce((a,r)=>a+r.total,0);
 
   $("totDays").textContent=String(totDays);
   $("totBase").textContent=fmt2(totBase);
-  $("totOT").textContent=fmt2(totOT);
-  $("totOV").textContent=fmt2(totOV);
-  $("totTotal").textContent=fmt2(totTotal);
+$("totOT").textContent=fmt2(totOT);
+$("totHoliday").textContent=fmt2(totHoliday);
+$("totOV").textContent=fmt2(totOV);
+$("totTotal").textContent=fmt2(totTotal);
 
   $("sumRegular").textContent=fmt2(s.regularPayHours);
   $("sumDayAdj").textContent=fmt2(totBase - s.regularPayHours);
-  $("sumAddl").textContent=fmt2(totOT);
-  $("sumOverride").textContent=fmt2(totOV);
+ $("sumAddl").textContent=fmt2(totOT);
+$("sumHoliday").textContent=fmt2(totHoliday);
+$("sumOverride").textContent=fmt2(totOV);
   $("sumPremOT").textContent=fmt2(totPremOT);
   $("sumGrand").textContent=fmt2(totTotal);
   const topTotal = $("topTotalHours");
@@ -2201,7 +2261,7 @@ if(key==="contractYear"){
     const k=monthSelect.value;
     const md=loadMonth(k);
     const computed=computeRows(md.rows,s,md);
-    let csv="Month,Day,Code,Base_hhmm,Base_dec,CountDay,BaseHours,Add2_5,Override,PremOnOT,TotalHours\n";
+    let csv="Month,Day,Code,Base_hhmm,Base_dec,CountDay,BaseHours,Add2_5,Holiday,Override,PremOnOT,TotalHours\n";
     computed.forEach(r=>{
       csv += [
         labelFor(k), r.day,
@@ -2211,9 +2271,10 @@ if(key==="contractYear"){
         r.count,
         fmt2(r.baseHrs),
         fmt2(r.add25),
-        fmt2(r.ov),
-        fmt2(r.premOT),
-        fmt2(r.total)
+fmt2(r.holidayPay),
+fmt2(r.ov),
+fmt2(r.premOT),
+fmt2(r.total)
       ].join(",") + "\n";
     });
     const blob=new Blob([csv],{type:"text/csv"});
