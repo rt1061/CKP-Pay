@@ -1603,6 +1603,9 @@ window.CKPCloud = {
         if(parts[0]!== "") parts.unshift("");
         out.codes=parts;
       }
+      if(!out.codes.includes("NOVR")){
+  out.codes.splice(5, 0, "NOVR");
+}
       return out;
     }catch{ return structuredClone(DEFAULTS); }
   }
