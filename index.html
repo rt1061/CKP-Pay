@@ -1665,16 +1665,17 @@ function saveMonthLocalOnly(k, d) {
   }
 
   function baseHoursFor(code, baseDec, s, md){
-  const c=(code||"").trim();
+  const c = (code || "").trim();
+  const isLR = md.lineRotation === "Yes";
 
-  if(c==="Vacation") return s.vacHrs;
-  if(c==="Sick") return s.sickHrs;
+  if(c === "Vacation") return s.vacHrs;
+  if(c === "Sick") return s.sickHrs;
 
-  if(c==="WDAY"||c==="Training"||c==="Stan Meeting"||c==="WKCXLD"){
-    return md.lineRotation === "Yes" ? 5.25 : s.daily;
+  if(c === "WDAY" || c === "Training" || c === "Stan Meeting" || c === "WKCXLD"){
+    return isLR ? 5.25 : s.daily;
   }
 
-  return baseDec>0 ? baseDec : 0;
+  return baseDec > 0 ? baseDec : 0;
 }
 
   function overrideBlocked(code){
