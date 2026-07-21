@@ -1664,13 +1664,18 @@ function saveMonthLocalOnly(k, d) {
     return baseDec>0;
   }
 
-  function baseHoursFor(code, baseDec, s){
-    const c=(code||"").trim();
-    if(c==="Vacation") return s.vacHrs;
-    if(c==="Sick") return s.sickHrs;
-    if(c==="WDAY"||c==="Training"||c==="Stan Meeting"||c==="WKCXLD") return s.daily;
-    return baseDec>0 ? baseDec : 0;
+  function baseHoursFor(code, baseDec, s, md){
+  const c=(code||"").trim();
+
+  if(c==="Vacation") return s.vacHrs;
+  if(c==="Sick") return s.sickHrs;
+
+  if(c==="WDAY"||c==="Training"||c==="Stan Meeting"||c==="WKCXLD"){
+    return md.lineRotation === "Yes" ? 5.25 : s.daily;
   }
+
+  return baseDec>0 ? baseDec : 0;
+}
 
   function overrideBlocked(code){
     const c=(code||"").trim();
@@ -1734,7 +1739,7 @@ function computeRows(rows, s, md, activeMonthKey = monthSelect.value){
     const counted = isCountDay(code, baseDec);
     if(counted) count++;
 
-    const baseHrs=baseHoursFor(code, baseDec, s);
+    const baseHrs=baseHoursFor(code, baseDec, s, md);
 
     const add25 = (!isLR && count > s.otAfterDay && baseHrs > 0 && !DEFAULTS.noCountCodes.includes(code))
       ? s.otPremHours
