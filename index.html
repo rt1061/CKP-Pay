@@ -1662,9 +1662,16 @@ function saveMonthLocalOnly(k, d) {
 
   function isCountDay(code, baseDec){
     const c=(code||"").trim();
-    if(DEFAULTS.noCountCodes.includes(c)) return false;
-    if(c==="WDAY"||c==="Training"||c==="Stan Meeting") return true;
+
+    // These do NOT count toward work days over 15
+    if(DEFAULTS.noCountCodes.includes(c) || c==="WKCXLD") return false;
+
+    // These DO count as work days even without entered hours
+    if(c==="WDAY" || c==="Training" || c==="Stan Meeting") return true;
+
+    // Normal worked days count when they have pay hours
     return baseDec>0;
+
   }
 
   function baseHoursFor(code, baseDec, s, md){
